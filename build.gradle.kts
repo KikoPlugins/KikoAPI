@@ -10,6 +10,7 @@ val minMinecraftVersion: String by project
 val bStatsVersion: String by project
 val junitVersion: String by project
 val mockbukkitVersion: String by project
+val hikariCPVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
 version = "1.0.0"
@@ -26,8 +27,9 @@ dependencies {
     paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
 
     // Dependencies
-    implementation("org.bstats:bstats-bukkit:$bStatsVersion")
-
+    implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
+    compileOnly("com.zaxxer:HikariCP:${hikariCPVersion}")
+    
     // Tests Dependencies
     testImplementation(paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT"))
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
