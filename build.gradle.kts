@@ -8,6 +8,7 @@ plugins {
 val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val bStatsVersion: String by project
+val mockbukkitVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
 version = "1.0.0"
@@ -25,6 +26,8 @@ dependencies {
 
     // Dependencies
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
+
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:${mockbukkitVersion}")
 }
 
 paperweight {
