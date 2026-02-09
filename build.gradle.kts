@@ -24,11 +24,11 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
 
     // Dependencies
+    implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
     compileOnly("com.zaxxer:HikariCP:$hikariCPVersion")
-    implementation("org.bstats:bstats-bukkit:$bStatsVersion")
 
     // Tests Dependencies
     testImplementation(paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT"))
