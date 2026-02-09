@@ -8,6 +8,7 @@ plugins {
 val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val bStatsVersion: String by project
+val junitVersion: String by project
 val mockbukkitVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
@@ -22,12 +23,16 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT")
 
     // Dependencies
-    implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
+    implementation("org.bstats:bstats-bukkit:$bStatsVersion")
 
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:${mockbukkitVersion}")
+    // Tests Dependencies
+    testImplementation(paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT"))
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockbukkitVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 paperweight {
@@ -54,6 +59,10 @@ tasks {
 
     build {
         dependsOn("jar")
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     javadoc {
