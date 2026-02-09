@@ -22,7 +22,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @NullMarked
@@ -75,6 +74,7 @@ public class UpdateChecker {
             if (this.noNewVersion)
                 return;
 
+            // TODO: Edit this when we have a language system
             Bukkit.getConsoleSender().sendMessage(Component.text("PLACEHOLDER"));
 
             Bukkit.getPluginManager().registerEvents(new UpdateCheckerListener(

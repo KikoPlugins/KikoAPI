@@ -31,6 +31,7 @@ public class UpdateCheckerListener implements Listener {
         if (!player.hasPermission(pluginName + ".update-checker"))
             return;
 
+        // TODO: Edit this when we have a language system
         player.sendMessage(Component.text("PLACEHOLDER"));
     }
 }
