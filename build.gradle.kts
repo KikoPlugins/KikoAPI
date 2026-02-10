@@ -9,6 +9,8 @@ val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val bStatsVersion: String by project
 val hikariCPVersion: String by project
+val junitVersion: String by project
+val mockbukkitVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
 version = "1.0.0"
@@ -26,7 +28,13 @@ dependencies {
 
     // Dependencies
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
-    compileOnly("com.zaxxer:HikariCP:${hikariCPVersion}")
+    compileOnly("com.zaxxer:HikariCP:$hikariCPVersion")
+
+    // Tests Dependencies
+    testImplementation(paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT"))
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockbukkitVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 paperweight {
@@ -55,6 +63,10 @@ tasks {
         dependsOn("jar")
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     javadoc {
         isFailOnError = false
         options.encoding = "UTF-8"
@@ -78,6 +90,20 @@ tasks {
     }
 
     processResources {
+        filteringCharset = "UTF-8"
+
+        val props = mapOf(
+            "version" to version,
+            "minMinecraftVersion" to minMinecraftVersion
+        )
+
+        inputs.properties(props)
+        filesMatching("paper-plugin.yml") {
+            expand(props)
+        }
+    }
+
+    processTestResources {
         filteringCharset = "UTF-8"
 
         val props = mapOf(
