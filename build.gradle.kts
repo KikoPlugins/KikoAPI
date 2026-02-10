@@ -8,6 +8,7 @@ plugins {
 val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val bStatsVersion: String by project
+val caffeineVersion: String by project
 val hikariCPVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
@@ -26,6 +27,7 @@ dependencies {
 
     // Dependencies
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("com.zaxxer:HikariCP:${hikariCPVersion}")
 }
 
