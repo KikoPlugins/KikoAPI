@@ -4,8 +4,8 @@
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/available/modrinth_vector.svg)](https://modrinth.com/plugin/kikoapi)
 ![Unsupported spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/compact/unsupported/spigot_vector.svg)
 <br>
-[![CodeFactor](https://www.codefactor.io/repository/github/kikoplugins/kikoapi/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/kikoplugins/kikoapi)
-![Version](https://img.shields.io/github/v/release/kikoplugins/KikoAPI?style=for-the-badge)
+[![CodeFactor](https://www.codefactor.io/repository/github/KikoPlugins/KikoAPI/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/KikoPlugins/KikoAPI)
+![Version](https://img.shields.io/github/v/release/KikoPlugins/KikoAPI?style=for-the-badge)
 </div>
 
 **KikoAPI** is a lightweight helper library for our Paper plugins that speeds up development.
