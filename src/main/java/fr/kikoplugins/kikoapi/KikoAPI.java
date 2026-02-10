@@ -1,13 +1,17 @@
 package fr.kikoplugins.kikoapi;
 
 import fr.kikoplugins.kikoapi.updatechecker.UpdateChecker;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KikoAPI extends JavaPlugin {
     private static final String MODRINTH_PROJECT_ID = "nwOXHH0K";
+    private static final int BSTATS_PLUGIN_ID = 29448;
 
     private static KikoAPI instance;
+
+    private Metrics bStats;
 
     @Override
     public void onLoad() {
@@ -18,20 +22,24 @@ public class KikoAPI extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
+        if (!isUnitTest())
+            this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
+
         if (this.getConfig().getBoolean("update-checker.enabled", true))
             new UpdateChecker(this, MODRINTH_PROJECT_ID);
     }
 
     @Override
     public void onDisable() {
-
-    }
-
-    public static KikoAPI getInstance() {
-        return instance;
+        if (!isUnitTest())
+            this.bStats.shutdown();
     }
 
     public static boolean isUnitTest() {
         return Bukkit.getVersion().contains("MockBukkit");
+    }
+
+    public static KikoAPI getInstance() {
+        return instance;
     }
 }
