@@ -460,9 +460,9 @@ public class Lang {
         }
 
         // Color resolver
-        Object2ObjectMap<String, String> colorMap = localeTags.getOrDefault("ncolor", Object2ObjectMaps.emptyMap());
+        Object2ObjectMap<String, String> colorMap = localeTags.getOrDefault("kcolor", Object2ObjectMaps.emptyMap());
         if (!colorMap.isEmpty()) {
-            resolvers.add(TagResolver.resolver("ncolor", (args, ctx) -> {
+            resolvers.add(TagResolver.resolver("kcolor", (args, ctx) -> {
                 String id = args.popOr("color id required").value();
                 String hex = colorMap.get(id);
                 TextColor color = TextColor.fromHexString(hex);

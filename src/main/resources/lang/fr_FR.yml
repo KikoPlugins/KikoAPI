@@ -8,7 +8,7 @@ special-tags:
     kiko: "<gradient:#FC67FA:#F4C4F3>ᴋɪᴋᴏ</gradient>"
 
   # ---------------- COLORS ----------------
-  ncolor:
+  kcolor:
     primary: "#FC67FA"
     secondary: "#F4C4F3"
     success: "#7AF291"
@@ -25,5 +25,5 @@ special-tags:
 
 kikoapi:
   new_update: |-
-    <prefix:kiko/> <separator> <ncolor:default>Il y a une nouvelle version de <ncolor:primary>KikoAPI</ncolor>: <ncolor:error><current_version></ncolor> → <ncolor:success><latest_version></ncolor></ncolor>
-    <ncolor:default>Lien de téléchargement: <ncolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></ncolor></ncolor>
+    <prefix:kiko/> <separator> <kcolor:default>Il y a une nouvelle version de <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
+    <kcolor:default>Lien de téléchargement: <kcolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></kcolor></kcolor>
