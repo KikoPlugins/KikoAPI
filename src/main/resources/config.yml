@@ -1,5 +1,6 @@
-lang: "en_US"
-use_player_locale: false
+lang:
+  default: "en_US"
+  use-player-locale: false
 
 update-checker:
   enabled: true

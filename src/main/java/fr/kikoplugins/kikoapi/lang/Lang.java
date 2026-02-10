@@ -197,14 +197,14 @@ public class Lang {
     @SuppressWarnings("java:S2629")
     private void initialize() {
         FileConfiguration config = this.plugin.getConfig();
-        String langCode = config.getString("lang", LangUtils.DEFAULT_LANG_CODE);
+        String langCode = config.getString("lang.default", LangUtils.DEFAULT_LANG_CODE);
         this.defaultLocale = Locale.forLanguageTag(langCode.replace('_', '-'));
-        this.usePlayerLocale = config.getBoolean("use_player_locale", false);
+        this.usePlayerLocale = config.getBoolean("lang.use-player-locale", false);
 
         saveDefaultLanguageFiles();
         ensureLocaleLoaded(defaultLocale);
 
-        this.logger.info("Initialized Lang system for {} with default locale: {} (use_player_locale: {}, cache: {})",
+        this.logger.info("Initialized Lang system for {} with default locale: {} (use-player-locale: {}, cache: {})",
                 plugin.getName(),
                 defaultLocale.toLanguageTag(),
                 usePlayerLocale,
