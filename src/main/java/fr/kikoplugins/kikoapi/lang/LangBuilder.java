@@ -13,6 +13,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.time.Duration;
+import java.util.Collections;
 
 @NullMarked
 public class LangBuilder {
@@ -92,7 +93,7 @@ public class LangBuilder {
     public LangBuilder addDefaultLanguageFiles(String... files) {
         Preconditions.checkNotNull(files, "files cannot be null");
 
-        this.defaultLanguageFiles.addAll(ObjectArrayList.wrap(files));
+        Collections.addAll(defaultLanguageFiles, files);
         return this;
     }
 

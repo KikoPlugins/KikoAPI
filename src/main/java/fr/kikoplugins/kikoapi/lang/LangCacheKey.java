@@ -1,5 +1,6 @@
 package fr.kikoplugins.kikoapi.lang;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import org.jspecify.annotations.NullMarked;
@@ -17,7 +18,7 @@ public class LangCacheKey {
     LangCacheKey(Locale locale, String key, ObjectList<?> placeholders) {
         this.locale = locale;
         this.key = key;
-        this.placeholders = ObjectLists.unmodifiable(placeholders);
+        this.placeholders = ObjectLists.unmodifiable(new ObjectArrayList<>(placeholders));
     }
 
     public Locale locale() {
