@@ -9,7 +9,7 @@ import org.mockbukkit.mockbukkit.ServerMock;
 
 public class KikoAPITest {
 
-    private ServerMock  server;
+    private ServerMock server;
     private KikoAPI kiko;
 
     @BeforeEach
