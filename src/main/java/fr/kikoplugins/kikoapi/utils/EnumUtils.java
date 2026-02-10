@@ -25,15 +25,8 @@ public class EnumUtils {
      * @return An Optional containing the matched enum constant, or empty if no match is found
      */
     public static <T extends Enum<T>> Optional<T> match(@Nullable String key, Class<T> enumClass) {
-        Preconditions.checkNotNull(enumClass, "enumClass cannot be null");
-        if (key == null)
-            return Optional.empty();
-
-        try {
-            return Optional.of(Enum.valueOf(enumClass, key.toUpperCase(Locale.ROOT)));
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
+        T value = match(key, enumClass, null);
+        return value == null ? Optional.empty() : Optional.of(value);
     }
 
     /**
@@ -54,6 +47,11 @@ public class EnumUtils {
         try {
             return Enum.valueOf(enumClass, key.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
+            for (T constant : enumClass.getEnumConstants()) {
+                if (constant.name().equalsIgnoreCase(key))
+                    return constant;
+            }
+
             return defaultValue;
         }
     }
