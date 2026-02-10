@@ -2,6 +2,7 @@ package fr.kikoplugins.kikoapi;
 
 import fr.kikoplugins.kikoapi.updatechecker.UpdateChecker;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KikoAPI extends JavaPlugin {
@@ -30,6 +31,10 @@ public class KikoAPI extends JavaPlugin {
     @Override
     public void onDisable() {
         this.bStats.shutdown();
+    }
+
+    public static boolean isUnitTest() {
+        return Bukkit.getVersion().contains("MockBukkit");
     }
 
     public static KikoAPI getInstance() {
