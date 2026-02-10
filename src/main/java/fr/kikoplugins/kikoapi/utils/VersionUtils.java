@@ -74,6 +74,9 @@ public enum VersionUtils {
 
     @Override
     public String toString() {
+        if (this == UNKNOWN)
+            return "UNKNOWN";
+
         return this.name()
                 .substring(1)
                 .replace("_", ".");
