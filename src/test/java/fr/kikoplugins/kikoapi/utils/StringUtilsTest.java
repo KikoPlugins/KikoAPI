@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 class StringUtilsTest {
 
     @Test
-    public void testCompareSemVer() {
+    void testCompareSemVer() {
         // Equal versions
         Assertions.assertEquals(0, StringUtils.compareSemVer("1.2.3", "1.2.3"));
         Assertions.assertEquals(0, StringUtils.compareSemVer("1.2", "1.2.0"));
@@ -22,13 +22,13 @@ class StringUtilsTest {
     }
 
     @Test
-    public void testCompareSemVerNullThrows() {
+    void testCompareSemVerNullThrows() {
         Assertions.assertThrows(NullPointerException.class, () -> StringUtils.compareSemVer(null, "1.0.0"));
         Assertions.assertThrows(NullPointerException.class, () -> StringUtils.compareSemVer("1.0.0", null));
     }
 
     @Test
-    public void testCompareSemVerInvalidFormatThrows() {
+    void testCompareSemVerInvalidFormatThrows() {
         Assertions.assertThrows(NumberFormatException.class, () -> StringUtils.compareSemVer("1.0.a", "1.0.0"));
     }
 
