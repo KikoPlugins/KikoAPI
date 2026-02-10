@@ -28,4 +28,9 @@ public class KikoAPITest {
     public void testPluginIfEnabled() {
         Assertions.assertTrue(kiko.isEnabled());
     }
+
+    @Test
+    public void testIfPluginIsUnitTest() {
+        Assertions.assertTrue(KikoAPI.isUnitTest());
+    }
 }
