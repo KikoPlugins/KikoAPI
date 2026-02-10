@@ -11,14 +11,14 @@ public enum VersionUtils {
     v1_21_8(772),
     v1_21_7(772);
 
-    private static VersionUtils serverVersion;
+    private static volatile VersionUtils serverVersion;
     public final int value;
 
     VersionUtils(int value) {
         this.value = value;
     }
 
-    public static VersionUtils version() {
+    public static synchronized VersionUtils version() {
         if (serverVersion != null)
             return serverVersion;
 
