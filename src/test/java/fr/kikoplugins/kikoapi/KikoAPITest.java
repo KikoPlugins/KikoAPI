@@ -8,29 +8,29 @@ import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
-public class KikoAPITest {
+class KikoAPITest {
 
     private ServerMock server;
     private KikoAPI kiko;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.server = MockBukkitHelper.safeMock();
         this.kiko = MockBukkit.load(KikoAPI.class);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
     @Test
-    public void testPluginIfEnabled() {
+    void testPluginIfEnabled() {
         Assertions.assertTrue(kiko.isEnabled());
     }
 
     @Test
-    public void testIfPluginIsUnitTest() {
+    void testIfPluginIsUnitTest() {
         Assertions.assertTrue(KikoAPI.isUnitTest());
     }
 
