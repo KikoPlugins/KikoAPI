@@ -22,7 +22,8 @@ public class KikoAPI extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
+        if (!isUnitTest())
+            this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
 
         if (this.getConfig().getBoolean("update-checker.enabled", true))
             new UpdateChecker(this, MODRINTH_PROJECT_ID);
@@ -30,7 +31,8 @@ public class KikoAPI extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.bStats.shutdown();
+        if (!isUnitTest())
+            this.bStats.shutdown();
     }
 
     public static boolean isUnitTest() {
