@@ -1,5 +1,6 @@
 package fr.kikoplugins.kikoapi;
 
+import fr.kikoplugins.kikoapi.mock.MockBukkitHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ public class KikoAPITest {
 
     @BeforeEach
     public void setUp() {
-        this.server = MockBukkit.mock();
+        this.server = MockBukkitHelper.safeMock();
         this.kiko = MockBukkit.load(KikoAPI.class);
     }
 
