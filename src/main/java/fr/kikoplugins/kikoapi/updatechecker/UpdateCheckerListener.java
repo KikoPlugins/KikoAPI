@@ -1,6 +1,6 @@
 package fr.kikoplugins.kikoapi.updatechecker;
 
-import net.kyori.adventure.text.Component;
+import fr.kikoplugins.kikoapi.lang.Lang;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Locale;
+
+import static fr.kikoplugins.kikoapi.KikoAPI.LANG;
 
 public class UpdateCheckerListener implements Listener {
     private final JavaPlugin plugin;
@@ -31,7 +33,9 @@ public class UpdateCheckerListener implements Listener {
         if (!player.hasPermission(pluginName + ".update-checker"))
             return;
 
-        // TODO: Edit this when we have a language system
-        player.sendMessage(Component.text("PLACEHOLDER"));
+        LANG.sendMessage(player, pluginName + ".new_update",
+                Lang.unparsedPlaceholder("current_version", this.currentVersion),
+                Lang.unparsedPlaceholder("latest_version", this.latestVersion)
+        );
     }
 }
