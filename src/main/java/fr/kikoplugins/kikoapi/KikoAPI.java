@@ -2,6 +2,7 @@ package fr.kikoplugins.kikoapi;
 
 import fr.kikoplugins.kikoapi.lang.Lang;
 import fr.kikoplugins.kikoapi.updatechecker.UpdateChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class KikoAPI extends JavaPlugin {
@@ -35,5 +36,9 @@ public class KikoAPI extends JavaPlugin {
 
     public static KikoAPI getInstance() {
         return instance;
+    }
+
+    public static boolean isUnitTest() {
+        return Bukkit.getVersion().contains("MockBukkit");
     }
 }

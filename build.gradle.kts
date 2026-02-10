@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("xyz.jpenilla.run-paper") version "3.0.2"
@@ -10,6 +13,8 @@ val minMinecraftVersion: String by project
 val bStatsVersion: String by project
 val caffeineVersion: String by project
 val hikariCPVersion: String by project
+val junitVersion: String by project
+val mockbukkitVersion: String by project
 
 group = "fr.kikoplugins.kikoapi"
 version = "1.0.0"
@@ -29,6 +34,12 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
     compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("com.zaxxer:HikariCP:${hikariCPVersion}")
+
+    // Test Dependencies
+    testImplementation(paperweight.paperDevBundle("$minecraftVersion-R0.1-SNAPSHOT"))
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockbukkitVersion")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 paperweight {
@@ -57,6 +68,21 @@ tasks {
         dependsOn("jar")
     }
 
+    test {
+        useJUnitPlatform()
+
+        testLogging {
+            events(
+                TestLogEvent.PASSED,
+                TestLogEvent.FAILED,
+                TestLogEvent.SKIPPED,
+            )
+
+            showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
+
     javadoc {
         isFailOnError = false
         options.encoding = "UTF-8"
@@ -80,6 +106,20 @@ tasks {
     }
 
     processResources {
+        filteringCharset = "UTF-8"
+
+        val props = mapOf(
+            "version" to version,
+            "minMinecraftVersion" to minMinecraftVersion
+        )
+
+        inputs.properties(props)
+        filesMatching("paper-plugin.yml") {
+            expand(props)
+        }
+    }
+
+    processTestResources {
         filteringCharset = "UTF-8"
 
         val props = mapOf(
