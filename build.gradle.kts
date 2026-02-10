@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("xyz.jpenilla.run-paper") version "3.0.2"
@@ -65,6 +68,17 @@ tasks {
 
     test {
         useJUnitPlatform()
+
+        testLogging {
+            events(
+                TestLogEvent.PASSED,
+                TestLogEvent.FAILED,
+                TestLogEvent.SKIPPED,
+            )
+
+            showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
     }
 
     javadoc {
