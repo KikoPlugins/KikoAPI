@@ -40,6 +40,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockbukkitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
 }
 
 paperweight {
