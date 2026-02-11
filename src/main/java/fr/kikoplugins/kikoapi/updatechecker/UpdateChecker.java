@@ -6,9 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.kikoplugins.kikoapi.KikoAPI;
+import fr.kikoplugins.kikoapi.lang.Lang;
 import fr.kikoplugins.kikoapi.utils.StringUtils;
 import fr.kikoplugins.kikoapi.utils.Task;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
@@ -22,7 +22,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import static fr.kikoplugins.kikoapi.KikoAPI.LANG;
 
 @NullMarked
 public class UpdateChecker {
@@ -74,8 +77,11 @@ public class UpdateChecker {
             if (this.noNewVersion)
                 return;
 
-            // TODO: Edit this when we have a language system
-            Bukkit.getConsoleSender().sendMessage(Component.text("PLACEHOLDER"));
+            String pluginName = this.plugin.getName().toLowerCase(Locale.ROOT);
+            LANG.sendMessage(Bukkit.getConsoleSender(), pluginName + ".new_update",
+                    Lang.unparsedPlaceholder("current_version", this.currentVersion),
+                    Lang.unparsedPlaceholder("latest_version", this.latestVersion)
+            );
 
             Bukkit.getPluginManager().registerEvents(new UpdateCheckerListener(
                     this.plugin,

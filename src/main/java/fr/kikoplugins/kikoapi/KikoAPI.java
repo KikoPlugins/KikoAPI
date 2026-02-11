@@ -1,5 +1,6 @@
 package fr.kikoplugins.kikoapi;
 
+import fr.kikoplugins.kikoapi.lang.Lang;
 import fr.kikoplugins.kikoapi.updatechecker.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -11,6 +12,8 @@ public class KikoAPI extends JavaPlugin {
 
     private static KikoAPI instance;
 
+    public static Lang LANG;
+
     private Metrics bStats;
 
     @Override
@@ -21,6 +24,10 @@ public class KikoAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        LANG = Lang.builder(this)
+                .addDefaultLanguageFiles("en_US.yml", "fr_FR.yml")
+                .build();
 
         if (!isUnitTest())
             this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);

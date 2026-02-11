@@ -20,5 +20,8 @@ public class KikoAPILoader implements PluginLoader {
         }
 
         resolver.addDependency(new Dependency(new DefaultArtifact("com.zaxxer:HikariCP:7.0.2"), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("com.github.ben-manes.caffeine:caffeine:3.2.3"), null));
+
+        classpathBuilder.addLibrary(resolver);
     }
 }

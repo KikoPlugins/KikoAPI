@@ -1,0 +1,29 @@
+# ============================================================
+# ===============  OTHER (PREFIXES, COLORS, ETC.) ============
+# ============================================================
+
+special-tags:
+  # ---------------- PREFIXES ----------------
+  prefix:
+    kiko: "<gradient:#FC67FA:#F4C4F3>ᴋɪᴋᴏ</gradient>"
+
+  # ---------------- COLORS ----------------
+  kcolor:
+    primary: "#FC67FA"
+    secondary: "#F4C4F3"
+    success: "#7AF291"
+    error: "#F27474"
+    default: "#B0AEC1"
+
+  # ---------------- OTHER ----------------
+  other:
+    separator: "<#B0AEC1>»</#B0AEC1>"
+
+# ============================================================
+# ======================== FEATURES ==========================
+# ============================================================
+
+kikoapi:
+  new_update: |-
+    <prefix:kiko/> <separator> <kcolor:default>Il y a une nouvelle version de <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
+    <kcolor:default>Lien de téléchargement: <kcolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></kcolor></kcolor>

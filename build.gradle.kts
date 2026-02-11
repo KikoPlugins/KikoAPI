@@ -11,6 +11,7 @@ plugins {
 val minecraftVersion: String by project
 val minMinecraftVersion: String by project
 val bStatsVersion: String by project
+val caffeineVersion: String by project
 val hikariCPVersion: String by project
 val junitVersion: String by project
 val mockbukkitVersion: String by project
@@ -31,6 +32,7 @@ dependencies {
 
     // Dependencies
     implementation("org.bstats:bstats-bukkit:${bStatsVersion}")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("com.zaxxer:HikariCP:${hikariCPVersion}")
 
     // Test Dependencies
@@ -38,6 +40,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:$junitVersion")
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockbukkitVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
 }
 
 paperweight {
