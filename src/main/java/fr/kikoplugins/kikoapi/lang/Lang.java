@@ -910,6 +910,8 @@ public class Lang {
     public void reload() {
         logger.info("Reloading language files for {}", plugin.getName());
 
+        plugin.reloadConfig();
+
         synchronized (this) {
             messages.clear();
             specialTags.clear();
