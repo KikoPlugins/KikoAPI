@@ -1,6 +1,7 @@
 name: KikoAPI
 version: '${version}'
 main: fr.kikoplugins.kikoapi.KikoAPI
+bootstrapper: fr.kikoplugins.kikoapi.KikoAPIBootstrap
 loader: fr.kikoplugins.kikoapi.KikoAPILoader
 api-version: '${minMinecraftVersion}'
 load: STARTUP
