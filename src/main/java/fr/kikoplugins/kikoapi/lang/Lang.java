@@ -69,20 +69,24 @@ import java.util.function.Supplier;
  * );
  * }</pre>
  */
+@SuppressWarnings("unused")
 @NullMarked
 public class Lang {
     private final JavaPlugin plugin;
     private final Logger logger;
     private final MiniMessage miniMessage;
+
     private final boolean cacheComponents;
     private final MissingKeyBehavior missingKeyBehavior;
     private final ObjectSet<String> defaultLanguageFiles;
     private final String langDirectory;
+
     private final Object2ObjectMap<Locale, Object2ObjectMap<String, String>> messages;
     private final Object2ObjectMap<Locale, Object2ObjectMap<String, Object2ObjectMap<String, String>>> specialTags;
     @Nullable private final Object componentCache;
     private final ObjectSet<Locale> loadedLocales;
     private final Object2ObjectMap<String, TagResolver> customTagResolvers;
+
     private Locale defaultLocale = Locale.US;
     private boolean usePlayerLocale = false;
 
@@ -516,6 +520,7 @@ public class Lang {
      * @param supplier The component supplier if not cached
      * @return The component
      */
+    @SuppressWarnings("unchecked")
     private Component getOrCacheComponent(LangCacheKey cacheKey, Supplier<Component> supplier) {
         if (componentCache == null)
             return supplier.get();
@@ -549,6 +554,34 @@ public class Lang {
 
         Locale locale = resolveLocale(audience);
         return rawMessage(locale, key);
+    }
+
+    /**
+     * Gets a raw message string (without MiniMessage parsing).
+     *
+     * @param key  The message key
+     * @param args Arguments to format into the message
+     * @return The formatted message string
+     */
+    public String getString(String key, Object... args) {
+        Preconditions.checkNotNull(key, "key cannot be null");
+        return rawMessage(defaultLocale, key).formatted(args);
+    }
+
+    /**
+     * Gets a raw message string for an audience (without MiniMessage parsing).
+     *
+     * @param audience The audience
+     * @param key      The message key
+     * @param args     Arguments to format into the message
+     * @return The formatted message string
+     */
+    public String getString(Audience audience, String key, Object... args) {
+        Preconditions.checkNotNull(audience, "audience cannot be null");
+        Preconditions.checkNotNull(key, "key cannot be null");
+
+        Locale locale = resolveLocale(audience);
+        return rawMessage(locale, key).formatted(args);
     }
 
     /**
@@ -873,6 +906,7 @@ public class Lang {
      * Reloads all language files and configuration from disk.
      * Clears all caches and re-reads configs.
      */
+    @SuppressWarnings("unchecked")
     public void reload() {
         logger.info("Reloading language files for {}", plugin.getName());
 
@@ -893,6 +927,7 @@ public class Lang {
      *
      * @return Cache statistics string
      */
+    @SuppressWarnings("unchecked")
     public String cacheStats() {
         int totalMessages;
         synchronized (messages) {
