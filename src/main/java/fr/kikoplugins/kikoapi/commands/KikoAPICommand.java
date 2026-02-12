@@ -7,6 +7,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import fr.kikoplugins.kikoapi.KikoAPI;
 import fr.kikoplugins.kikoapi.lang.Lang;
 import fr.kikoplugins.kikoapi.utils.CommandUtils;
+import fr.kikoplugins.kikoapi.utils.MathUtils;
+import fr.kikoplugins.kikoapi.utils.Task;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.command.CommandSender;
@@ -32,13 +34,17 @@ public class KikoAPICommand {
                 .executes(ctx -> {
                     CommandSender sender = CommandUtils.sender(ctx);
 
-                    long startMillis = System.currentTimeMillis();
-                    KikoAPI.getInstance().reload();
-                    long timeTaken = System.currentTimeMillis() - startMillis;
+                    LANG.sendMessage(sender, "command.reload.start");
+                    long startNanos = System.nanoTime();
 
-                    LANG.sendMessage(sender, "command.reload.done",
-                            Lang.numberPlaceholder("time_ms", timeTaken)
-                    );
+                    Task.async(task -> {
+                        KikoAPI.getInstance().reload();
+                        double timeTaken = (System.nanoTime() - startNanos) / 1_000_000D;
+
+                        LANG.sendMessage(sender, "command.reload.done",
+                                Lang.numberPlaceholder("time_ms", MathUtils.decimalRound(timeTaken, 2))
+                        );
+                    }, KikoAPI.getInstance());
 
                     return Command.SINGLE_SUCCESS;
                 });
