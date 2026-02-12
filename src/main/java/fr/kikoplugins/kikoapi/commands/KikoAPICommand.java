@@ -38,12 +38,17 @@ public class KikoAPICommand {
                     long startNanos = System.nanoTime();
 
                     Task.async(task -> {
-                        KikoAPI.getInstance().reload();
-                        double timeTaken = (System.nanoTime() - startNanos) / 1_000_000D;
+                        try {
+                            KikoAPI.getInstance().reload();
+                            double timeTaken = (System.nanoTime() - startNanos) / 1_000_000D;
 
-                        LANG.sendMessage(sender, "command.reload.done",
-                                Lang.numberPlaceholder("time_ms", MathUtils.decimalRound(timeTaken, 2))
-                        );
+                            LANG.sendMessage(sender, "command.reload.done",
+                                    Lang.numberPlaceholder("time_ms", MathUtils.decimalRound(timeTaken, 2))
+                            );
+                        } catch (Exception e) {
+                            KikoAPI.getInstance().getSLF4JLogger().error("Failed to reload KikoAPI", e);
+                            LANG.sendMessage(sender, "command.reload.error");
+                        }
                     }, KikoAPI.getInstance());
 
                     return Command.SINGLE_SUCCESS;

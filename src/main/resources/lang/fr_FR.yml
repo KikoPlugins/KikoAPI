@@ -27,6 +27,7 @@ command:
   reload:
     start: "<prefix:kiko> <separator> <kcolor:default>Rechargement de KikoAPI...</kcolor>"
     done: "<prefix:kiko> <separator> <kcolor:success>KikoAPI a été rechargé. (<time_ms> ms)</kcolor>"
+    error: "<prefix:kiko> <separator> <kcolor:error>Une erreur s'est produite lors du rechargement de KikoAPI. Veuillez vérifier la console pour plus d'informations.</kcolor>"
 
 new-update: |-
   <prefix:kiko> <separator> <kcolor:default>Il y a une nouvelle version de <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
