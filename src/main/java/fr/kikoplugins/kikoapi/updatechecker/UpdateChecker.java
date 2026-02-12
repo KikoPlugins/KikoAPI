@@ -76,7 +76,7 @@ public class UpdateChecker {
             if (this.noNewVersion)
                 return;
 
-            LANG.sendMessage(Bukkit.getConsoleSender(), "new_update",
+            LANG.sendMessage(Bukkit.getConsoleSender(), "new-update",
                     Lang.unparsedPlaceholder("current_version", this.currentVersion),
                     Lang.unparsedPlaceholder("latest_version", this.latestVersion)
             );

@@ -11,7 +11,7 @@ import java.util.Optional;
  * Utility class providing static methods for enum manipulations.
  */
 @NullMarked
-public class EnumUtils {
+public final class EnumUtils {
     private EnumUtils() {
         throw new IllegalStateException("Utility class");
     }
