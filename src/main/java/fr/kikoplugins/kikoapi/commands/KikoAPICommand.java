@@ -45,7 +45,7 @@ public class KikoAPICommand {
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> sendTestMessageCommand() {
-        return Commands.literal("sendtestcommand")
+        return Commands.literal("sendtestmessage")
                 .requires(css -> CommandUtils.defaultRequirements(css, "kikoapi.command.kikoapi.sendtestmessage"))
                 .then(Commands.argument("key", StringArgumentType.word())
                         .executes(ctx -> {
