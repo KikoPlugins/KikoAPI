@@ -24,6 +24,10 @@ special-tags:
 # ============================================================
 
 kikoapi:
+  command:
+    reload:
+      done: "<prefix:kiko/> <separator> <kcolor:success>KikoAPI has been reloaded. (<time_ms> ms)</kcolor>"
+
   new_update: |-
     <prefix:kiko/> <separator> <kcolor:default>There is a new version of <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
     <kcolor:default>Download link: <kcolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></kcolor></kcolor>
