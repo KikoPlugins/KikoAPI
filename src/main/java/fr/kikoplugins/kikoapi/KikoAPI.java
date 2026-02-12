@@ -42,15 +42,6 @@ public class KikoAPI extends JavaPlugin {
             this.bStats.shutdown();
     }
 
-    public void reload() {
-        this.getSLF4JLogger().info("Reloading KikoAPI...");
-
-        this.reloadConfig();
-        LANG.reload();
-
-        this.getSLF4JLogger().info("KikoAPI reloaded.");
-    }
-
     public static boolean isUnitTest() {
         return Bukkit.getVersion().contains("MockBukkit");
     }
