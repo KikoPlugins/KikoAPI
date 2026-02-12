@@ -36,7 +36,7 @@ public class KikoAPICommand {
                     KikoAPI.getInstance().reload();
                     long timeTaken = System.currentTimeMillis() - startMillis;
 
-                    LANG.sendMessage(sender, "kikoapi.command.reload.done",
+                    LANG.sendMessage(sender, "command.reload.done",
                             Lang.numberPlaceholder("time_ms", timeTaken)
                     );
 

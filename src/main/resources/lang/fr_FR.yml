@@ -23,11 +23,10 @@ special-tags:
 # ======================== FEATURES ==========================
 # ============================================================
 
-kikoapi:
-  command:
-    reload:
-      done: "<prefix:kiko/> <separator> <kcolor:success>KikoAPI a été rechargé. (<time_ms> ms)</kcolor>"
+command:
+  reload:
+    done: "<prefix:kiko/> <separator> <kcolor:success>KikoAPI a été rechargé. (<time_ms> ms)</kcolor>"
 
-  new_update: |-
-    <prefix:kiko/> <separator> <kcolor:default>Il y a une nouvelle version de <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
-    <kcolor:default>Lien de téléchargement: <kcolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></kcolor></kcolor>
+new-update: |-
+  <prefix:kiko/> <separator> <kcolor:default>Il y a une nouvelle version de <kcolor:primary>KikoAPI</kcolor>: <kcolor:error><current_version></kcolor> → <kcolor:success><latest_version></kcolor></kcolor>
+  <kcolor:default>Lien de téléchargement: <kcolor:secondary><click:open_url:"https://modrinth.com/plugin/kikoapi">https://modrinth.com/plugin/kikoapi</click></kcolor></kcolor>

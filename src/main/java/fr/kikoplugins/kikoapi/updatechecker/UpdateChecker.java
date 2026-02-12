@@ -22,7 +22,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static fr.kikoplugins.kikoapi.KikoAPI.LANG;
@@ -77,8 +76,7 @@ public class UpdateChecker {
             if (this.noNewVersion)
                 return;
 
-            String pluginName = this.plugin.getName().toLowerCase(Locale.ROOT);
-            LANG.sendMessage(Bukkit.getConsoleSender(), pluginName + ".new_update",
+            LANG.sendMessage(Bukkit.getConsoleSender(), "new_update",
                     Lang.unparsedPlaceholder("current_version", this.currentVersion),
                     Lang.unparsedPlaceholder("latest_version", this.latestVersion)
             );
