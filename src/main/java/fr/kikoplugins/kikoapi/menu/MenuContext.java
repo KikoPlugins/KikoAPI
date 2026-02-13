@@ -47,7 +47,7 @@ public class MenuContext {
      *
      * @return the menu instance
      */
-    public Menu menu() {
+    public Menu getMenu() {
         return menu;
     }
 
@@ -56,8 +56,8 @@ public class MenuContext {
      *
      * @return the player who owns the menu
      */
-    public Player player() {
-        return this.menu.player();
+    public Player getPlayer() {
+        return this.menu.getPlayer();
     }
 
     /**
@@ -66,7 +66,7 @@ public class MenuContext {
      * @return the previous menu instance, or null if there is none
      */
     @Nullable
-    public Menu previousMenu() {
+    public Menu getPreviousMenu() {
         if (this.previousMenus.isEmpty())
             return null;
 
@@ -89,14 +89,14 @@ public class MenuContext {
      * @param menu the new menu to set
      * @throws NullPointerException if menu is null
      */
-    void menu(Menu menu) {
+    void getMenu(Menu menu) {
         Preconditions.checkNotNull(menu, "menu cannot be null");
         if (this.firstMenuSet) {
             this.firstMenuSet = false;
             return;
         }
 
-        lastMenu();
+        storeLastMenu();
 
         this.menu = menu;
         this.wasPreviousMenuCall = false;
@@ -105,7 +105,7 @@ public class MenuContext {
     /**
      * Stores the current menu in the previous menus stack if applicable.
      */
-    private void lastMenu() {
+    private void storeLastMenu() {
         if (this.wasPreviousMenuCall || !this.menu.canGoBackToThisMenu())
             return;
 

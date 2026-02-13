@@ -44,8 +44,8 @@ public class PaginatedTestMenu extends Menu {
      * @return a colorized title component
      */
     @Override
-    protected Component title() {
-        return Component.text("Paginated Test Menu Hehe :3", ColorUtils.primaryColor());
+    protected Component getTitle() {
+        return Component.text("Paginated Test Menu Hehe :3", ColorUtils.getPrimaryColor());
     }
 
     /**
@@ -63,7 +63,7 @@ public class PaginatedTestMenu extends Menu {
      * @return the root grid component containing the paginator and navigation controls
      */
     @Override
-    protected MenuComponent root(MenuContext context) {
+    protected MenuComponent getRoot(MenuContext context) {
         Paginator paginator = Paginator.create()
                 .size(7, 3)
                 .firstPageItem(ItemStack.of(Material.SPECTRAL_ARROW))
@@ -74,7 +74,7 @@ public class PaginatedTestMenu extends Menu {
                 .offLastPageItem(ItemStack.of(Material.ORANGE_DYE))
                 .build();
 
-        World world = this.player().getWorld();
+        World world = this.getPlayer().getWorld();
         ObjectList<MenuComponent> materials = Arrays.stream(Material.values())
                 .filter(material -> !material.isLegacy())
                 .filter(Material::isItem) // Remove things like Piston Head
@@ -99,10 +99,10 @@ public class PaginatedTestMenu extends Menu {
 
         return Grid.create()
                 .size(9, 6)
-                .add(45, paginator.firstPageButton())
-                .add(46, paginator.backButton())
-                .add(52, paginator.nextButton())
-                .add(53, paginator.lastPageButton())
+                .add(45, paginator.getFirstPageButton())
+                .add(46, paginator.getBackButton())
+                .add(52, paginator.getNextButton())
+                .add(53, paginator.getLastPageButton())
                 .add(10, paginator)
                 .build();
     }

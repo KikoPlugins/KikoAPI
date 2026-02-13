@@ -43,8 +43,8 @@ public class DynamicTestMenu extends Menu {
      * @return a colorized title component
      */
     @Override
-    protected Component title() {
-        return Component.text("Dynamic Component Test", ColorUtils.primaryColor());
+    protected Component getTitle() {
+        return Component.text("Dynamic Component Test", ColorUtils.getPrimaryColor());
     }
 
     /**
@@ -57,7 +57,7 @@ public class DynamicTestMenu extends Menu {
      * @return the root component layout
      */
     @Override
-    protected MenuComponent root(MenuContext context) {
+    protected MenuComponent getRoot(MenuContext context) {
         ProgressBar progressBar = ProgressBar.create()
                 .id(PROGRESS_ID)
                 .doneItem(ItemStack.of(Material.LIME_CONCRETE))
@@ -146,8 +146,8 @@ public class DynamicTestMenu extends Menu {
      * - Changes the status icon based on progress level
      */
     private void updateComponents() {
-        ProgressBar progressBar = (ProgressBar) this.componentByID(PROGRESS_ID);
-        Icon statusIcon = (Icon) this.componentByID(STATUS_ID);
+        ProgressBar progressBar = (ProgressBar) this.getComponentByID(PROGRESS_ID);
+        Icon statusIcon = (Icon) this.getComponentByID(STATUS_ID);
 
         progressBar.percentage(this.currentProgress());
 

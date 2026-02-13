@@ -103,7 +103,7 @@ public class Selector<T> extends MenuComponent {
             return;
 
         T appliedDefaultOption = this.defaultOption.apply(context);
-        this.selection(appliedDefaultOption);
+        this.setSelection(appliedDefaultOption);
     }
 
     /**
@@ -118,7 +118,7 @@ public class Selector<T> extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
         int operation = switch (event.getClick()) {
@@ -131,12 +131,12 @@ public class Selector<T> extends MenuComponent {
             return;
 
         if (this.sound != null)
-            context.player().playSound(this.sound, Sound.Emitter.self());
+            context.getPlayer().playSound(this.sound, Sound.Emitter.self());
 
-        Option<T> oldOption = this.currentOption();
+        Option<T> oldOption = this.getCurrentOption();
         int oldIndex = this.currentIndex;
         this.currentIndex = Math.floorMod(this.currentIndex + operation, this.options.size());
-        Option<T> newOption = this.currentOption();
+        Option<T> newOption = this.getCurrentOption();
 
         if (this.onSelectionChange == null)
             return;
@@ -162,13 +162,13 @@ public class Selector<T> extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.visible())
+        if (!this.isVisible())
             return items;
 
-        ItemStack baseItem = this.currentItem(context);
-        int baseSlot = this.slot();
+        ItemStack baseItem = this.getCurrentItem(context);
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -191,12 +191,12 @@ public class Selector<T> extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return slots;
 
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -214,7 +214,7 @@ public class Selector<T> extends MenuComponent {
      *
      * @param value the value to select
      */
-    private void selection(T value) {
+    private void setSelection(T value) {
         for (int i = 0; i < this.options.size(); i++) {
             if (Objects.equals(this.options.get(i).value, value)) {
                 this.currentIndex = i;
@@ -228,7 +228,7 @@ public class Selector<T> extends MenuComponent {
      *
      * @return the current Option instance
      */
-    private Option<T> currentOption() {
+    private Option<T> getCurrentOption() {
         return this.options.get(this.currentIndex);
     }
 
@@ -238,8 +238,8 @@ public class Selector<T> extends MenuComponent {
      * @param context the menu context
      * @return the ItemStack for the current option
      */
-    private ItemStack currentItem(MenuContext context) {
-        return this.currentOption().item.apply(context);
+    private ItemStack getCurrentItem(MenuContext context) {
+        return this.getCurrentOption().item.apply(context);
     }
 
     /**
@@ -352,7 +352,7 @@ public class Selector<T> extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -363,7 +363,7 @@ public class Selector<T> extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 
@@ -410,7 +410,7 @@ public class Selector<T> extends MenuComponent {
         @Nullable
         private Sound sound = Sound.sound(
                 Key.key("minecraft", "ui.button.click"),
-                BackwardUtils.UI_SOUND_SOURCE,
+                Sound.Source.UI,
                 1F,
                 1F
         );

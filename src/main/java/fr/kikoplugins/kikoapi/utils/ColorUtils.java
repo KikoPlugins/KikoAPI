@@ -17,7 +17,7 @@ public class ColorUtils {
      *
      * @return The primary TextColor.
      */
-    public static TextColor primaryColor() {
+    public static TextColor getPrimaryColor() {
         return TextColor.fromHexString("#FC67FA");
     }
 
@@ -26,7 +26,7 @@ public class ColorUtils {
      *
      * @return The secondary TextColor.
      */
-    public static TextColor secondaryColor() {
+    public static TextColor getSecondaryColor() {
         return TextColor.fromHexString("#F4C4F3");
     }
 }

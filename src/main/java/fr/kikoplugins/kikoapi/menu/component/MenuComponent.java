@@ -118,7 +118,7 @@ public abstract class MenuComponent {
      * @param context the menu context
      * @return a map from slot indices to ItemStacks
      */
-    public abstract Int2ObjectMap<ItemStack> items(MenuContext context);
+    public abstract Int2ObjectMap<ItemStack> getItems(MenuContext context);
 
     /**
      * Returns the set of inventory slot indices that this component occupies.
@@ -129,7 +129,7 @@ public abstract class MenuComponent {
      * @param context the menu context
      * @return a set of slot indices
      */
-    public abstract IntSet slots(MenuContext context);
+    public abstract IntSet getSlots(MenuContext context);
 
     /**
      * Renders this component to the menu's inventory.
@@ -143,15 +143,15 @@ public abstract class MenuComponent {
     public void render(MenuContext context) {
         Preconditions.checkNotNull(context, "context cannot be null");
 
-        if (!this.visible())
+        if (!this.isVisible())
             return;
 
-        Int2ObjectMap<ItemStack> items = this.items(context);
-        IntSet slots = this.slots(context);
+        Int2ObjectMap<ItemStack> items = this.getItems(context);
+        IntSet slots = this.getSlots(context);
 
         for (int slot : slots) {
             ItemStack item = items.get(slot);
-            context.menu().getInventory().setItem(slot, item);
+            context.getMenu().getInventory().setItem(slot, item);
         }
     }
 
@@ -162,7 +162,7 @@ public abstract class MenuComponent {
      * @param y the y-coordinate (0+ for inventory height)
      * @throws IllegalArgumentException if x or y is negative
      */
-    public void position(@NonNegative int x, @NonNegative int y) {
+    public void setPosition(@NonNegative int x, @NonNegative int y) {
         Preconditions.checkArgument(x >= 0, "x cannot be negative: %s", x);
         Preconditions.checkArgument(y >= 0, "y cannot be negative: %s", y);
 
@@ -171,30 +171,12 @@ public abstract class MenuComponent {
     }
 
     /**
-     * Sets the visibility state of this component.
-     *
-     * @param visible true to make the component visible, false to hide it
-     */
-    public void visible(boolean visible) {
-        this.visible = visible;
-    }
-
-    /**
-     * Sets the enabled state of this component.
-     *
-     * @param enabled true to enable the component, false to disable it
-     */
-    public void enabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    /**
      * Returns the unique identifier of this component.
      *
      * @return the component ID
      */
     @Nullable
-    public String id() {
+    public String getID() {
         return id;
     }
 
@@ -204,7 +186,7 @@ public abstract class MenuComponent {
      * @return the x-coordinate (0-based)
      */
     @NonNegative
-    public int x() {
+    public int getX() {
         return x;
     }
 
@@ -214,7 +196,7 @@ public abstract class MenuComponent {
      * @return the y-coordinate (0-based)
      */
     @NonNegative
-    public int y() {
+    public int getY() {
         return y;
     }
 
@@ -224,7 +206,7 @@ public abstract class MenuComponent {
      * @return the component width (must be positive)
      */
     @Positive
-    public abstract int width();
+    public abstract int getWidth();
 
     /**
      * Returns the height of this component in inventory rows.
@@ -232,7 +214,7 @@ public abstract class MenuComponent {
      * @return the component height (must be positive)
      */
     @Positive
-    public abstract int height();
+    public abstract int getHeight();
 
     /**
      * Returns the inventory slot index for this component's top-left position.
@@ -240,7 +222,7 @@ public abstract class MenuComponent {
      * @return the slot index calculated from x and y coordinates
      */
     @NonNegative
-    public int slot() {
+    public int getSlot() {
         return y * 9 + x;
     }
 
@@ -249,8 +231,17 @@ public abstract class MenuComponent {
      *
      * @return true if visible, false otherwise
      */
-    public boolean visible() {
+    public boolean isVisible() {
         return visible;
+    }
+
+    /**
+     * Sets the visibility state of this component.
+     *
+     * @param visible true to make the component visible, false to hide it
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     /**
@@ -258,8 +249,17 @@ public abstract class MenuComponent {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean enabled() {
+    public boolean isEnabled() {
         return enabled;
+    }
+
+    /**
+     * Sets the enabled state of this component.
+     *
+     * @param enabled true to enable the component, false to disable it
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
@@ -269,7 +269,7 @@ public abstract class MenuComponent {
      *
      * @return true if the component is interactable, false otherwise
      */
-    public boolean interactable() {
+    public boolean isInteractable() {
         return this.visible && this.enabled;
     }
 

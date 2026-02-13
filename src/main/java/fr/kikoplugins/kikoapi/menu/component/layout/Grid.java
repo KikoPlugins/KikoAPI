@@ -82,9 +82,9 @@ public class Grid extends MenuComponent {
         this.slotComponents.forEach(component -> {
             component.onAdd(context);
 
-            String addedID = component.id();
+            String addedID = component.getID();
             if (addedID != null)
-                context.menu().registerComponentID(addedID, component);
+                context.getMenu().registerComponentID(addedID, component);
         });
     }
 
@@ -100,9 +100,9 @@ public class Grid extends MenuComponent {
         this.slotComponents.forEach(component -> {
             component.onRemove(context);
 
-            String removedID = component.id();
+            String removedID = component.getID();
             if (removedID != null)
-                context.menu().unregisterComponentID(removedID);
+                context.getMenu().unregisterComponentID(removedID);
         });
     }
 
@@ -118,11 +118,11 @@ public class Grid extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
         for (MenuComponent component : this.slotComponents) {
-            if (component.slots(context).contains(event.slot())) {
+            if (component.getSlots(context).contains(event.slot())) {
                 component.onClick(event, context);
                 break;
             }
@@ -140,22 +140,22 @@ public class Grid extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
 
         for (MenuComponent slotComponent : this.slotComponents)
-            items.putAll(slotComponent.items(context));
+            items.putAll(slotComponent.getItems(context));
 
         if (this.border == null && this.fill == null)
             return items;
 
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
-                int slot = toSlot(x + this.x(), y + this.y());
+                int slot = toSlot(x + this.getX(), y + this.getY());
                 if (items.containsKey(slot))
                     continue;
 
-                if (this.border != null && this.border(x + this.x(), y + this.y()))
+                if (this.border != null && this.isBorder(x + this.getX(), y + this.getY()))
                     items.put(slot, this.border);
                 else if (this.fill != null)
                     items.put(slot, this.fill);
@@ -175,11 +175,11 @@ public class Grid extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet();
 
-        int startX = this.x();
-        int startY = this.y();
+        int startX = this.getX();
+        int startY = this.getY();
 
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
@@ -198,7 +198,7 @@ public class Grid extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -209,7 +209,7 @@ public class Grid extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 
@@ -220,11 +220,11 @@ public class Grid extends MenuComponent {
      * @param y the absolute y-coordinate
      * @return true if the position is on the grid border, false otherwise
      */
-    private boolean border(int x, int y) {
-        return x == this.x()
-                || x == this.x() + this.width - 1
-                || y == this.y()
-                || y == this.y() + this.height - 1;
+    private boolean isBorder(int x, int y) {
+        return x == this.getX()
+                || x == this.getX() + this.width - 1
+                || y == this.getY()
+                || y == this.getY() + this.height - 1;
     }
 
     /**
@@ -252,13 +252,13 @@ public class Grid extends MenuComponent {
             Preconditions.checkArgument(slot >= 0, "slot cannot be negative: %s", slot);
             Preconditions.checkNotNull(component, "component cannot be null");
 
-            component.position(toX(slot), toY(slot));
+            component.setPosition(toX(slot), toY(slot));
 
             // Check that the component fits inside the grid
-            int compX = component.x();
-            int compY = component.y();
-            int compWidth = component.width();
-            int compHeight = component.height();
+            int compX = component.getX();
+            int compY = component.getY();
+            int compWidth = component.getWidth();
+            int compHeight = component.getHeight();
 
             Preconditions.checkArgument(
                     compX >= 0 && compY >= 0 &&

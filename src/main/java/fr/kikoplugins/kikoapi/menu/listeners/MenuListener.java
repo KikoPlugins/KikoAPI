@@ -28,7 +28,7 @@ public class MenuListener implements Listener {
 
         event.setCancelled(true);
 
-        KikoInventoryClickEvent clickEvent = new KikoInventoryClickEvent(event, menu.context());
+        KikoInventoryClickEvent clickEvent = new KikoInventoryClickEvent(event, menu.getContext());
         menu.handleClick(clickEvent);
     }
 }

@@ -79,13 +79,13 @@ public class Icon extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
         if (this.sound == null)
             return;
 
-        context.player().playSound(this.sound, Sound.Emitter.self());
+        context.getPlayer().playSound(this.sound, Sound.Emitter.self());
     }
 
     /**
@@ -98,13 +98,13 @@ public class Icon extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.visible())
+        if (!this.isVisible())
             return items;
 
         ItemStack baseItem = this.item.apply(context);
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -127,12 +127,12 @@ public class Icon extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return slots;
 
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -194,7 +194,7 @@ public class Icon extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -205,7 +205,7 @@ public class Icon extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 

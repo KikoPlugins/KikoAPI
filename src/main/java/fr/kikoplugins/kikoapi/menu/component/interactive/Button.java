@@ -42,21 +42,16 @@ public class Button extends MenuComponent {
     private Function<MenuContext, ItemStack> item;
     @Nullable
     private Consumer<KikoInventoryClickEvent> onClick, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onDrop;
-    @Nullable
-    private Sound sound;
-    @Nullable
-    private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
+    @Nullable private Sound sound;
+    @Nullable private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
     private int animationInterval;
     private boolean stopAnimationOnHide;
-    @Nullable
-    private BukkitTask animationTask;
+    @Nullable private BukkitTask animationTask;
     private int currentFrame;
-    @Nullable
-    private Function<MenuContext, ItemStack> dynamicItem;
+    @Nullable private Function<MenuContext, ItemStack> dynamicItem;
     private int updateInterval;
     private boolean stopUpdatesOnHide;
-    @Nullable
-    private BukkitTask updateTask;
+    @Nullable private BukkitTask updateTask;
 
     /**
      * Constructs a new Button with the specified parameters.
@@ -166,7 +161,7 @@ public class Button extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
         Consumer<KikoInventoryClickEvent> handler = switch (event.getClick()) {
@@ -182,7 +177,7 @@ public class Button extends MenuComponent {
             handler.accept(event);
 
             if (this.sound != null)
-                context.player().playSound(this.sound, Sound.Emitter.self());
+                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
             return;
         }
 
@@ -190,7 +185,7 @@ public class Button extends MenuComponent {
             this.onClick.accept(event);
 
             if (this.sound != null)
-                context.player().playSound(this.sound, Sound.Emitter.self());
+                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
         }
     }
 
@@ -204,13 +199,13 @@ public class Button extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.visible())
+        if (!this.isVisible())
             return items;
 
-        ItemStack baseItem = this.currentItem(context);
-        int baseSlot = this.slot();
+        ItemStack baseItem = this.getCurrentItem(context);
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -233,12 +228,12 @@ public class Button extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return slots;
 
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -258,7 +253,7 @@ public class Button extends MenuComponent {
      */
     private void startAnimation(MenuContext context) {
         this.animationTask = Task.syncRepeat(() -> {
-            if (!enabled() || (this.stopAnimationOnHide && !visible())) {
+            if (!isEnabled() || (this.stopAnimationOnHide && !isVisible())) {
                 stopAnimation();
                 return;
             }
@@ -292,7 +287,7 @@ public class Button extends MenuComponent {
      */
     private void startUpdates(MenuContext context) {
         this.updateTask = Task.syncRepeat(() -> {
-            if (!enabled() || (this.stopUpdatesOnHide && !visible())) {
+            if (!isEnabled() || (this.stopUpdatesOnHide && !isVisible())) {
                 stopUpdates();
                 return;
             }
@@ -320,7 +315,7 @@ public class Button extends MenuComponent {
      * @param context the menu context
      * @return the appropriate ItemStack for the current state
      */
-    private ItemStack currentItem(MenuContext context) {
+    private ItemStack getCurrentItem(MenuContext context) {
         if (this.dynamicItem != null)
             return this.dynamicItem.apply(context);
 
@@ -558,7 +553,7 @@ public class Button extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -569,7 +564,7 @@ public class Button extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 

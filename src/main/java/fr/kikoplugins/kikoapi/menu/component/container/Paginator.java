@@ -109,9 +109,9 @@ public class Paginator extends MenuComponent {
         this.components.forEach(component -> {
             component.onAdd(context);
 
-            String addedID = component.id();
+            String addedID = component.getID();
             if (addedID != null)
-                context.menu().registerComponentID(addedID, component);
+                context.getMenu().registerComponentID(addedID, component);
         });
     }
 
@@ -127,9 +127,9 @@ public class Paginator extends MenuComponent {
         this.components.forEach(component -> {
             component.onRemove(context);
 
-            String removedID = component.id();
+            String removedID = component.getID();
             if (removedID != null)
-                context.menu().unregisterComponentID(removedID);
+                context.getMenu().unregisterComponentID(removedID);
         });
     }
 
@@ -141,8 +141,8 @@ public class Paginator extends MenuComponent {
         this.layoutSlots.clear();
         for (int row = 0; row < this.height; row++) {
             for (int col = 0; col < this.width; col++) {
-                int absX = this.x() + col;
-                int absY = this.y() + row;
+                int absX = this.getX() + col;
+                int absY = this.getY() + row;
 
                 this.layoutSlots.add(MenuComponent.toSlot(absX, absY));
             }
@@ -150,8 +150,8 @@ public class Paginator extends MenuComponent {
     }
 
     @Override
-    public void position(@NonNegative int x, @NonNegative int y) {
-        super.position(x, y);
+    public void setPosition(@NonNegative int x, @NonNegative int y) {
+        super.setPosition(x, y);
         // Position changed, we must re-calculate the absolute slots for the grid
         this.updateLayoutSlots();
     }
@@ -167,16 +167,16 @@ public class Paginator extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
-        ObjectList<MenuComponent> pageComponents = this.currentPageComponents();
+        ObjectList<MenuComponent> pageComponents = this.getCurrentPageComponents();
         for (int i = 0; i < pageComponents.size(); i++) {
             if (i >= this.layoutSlots.size())
                 break; // Should not happen if page size matches, but safety check
 
             MenuComponent component = pageComponents.get(i);
-            if (component.slots(context).contains(event.slot())) {
+            if (component.getSlots(context).contains(event.slot())) {
                 component.onClick(event, context);
                 return;
             }
@@ -193,9 +193,9 @@ public class Paginator extends MenuComponent {
      * @return a map from slot indices to ItemStacks for the current page
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        ObjectList<MenuComponent> pageComponents = this.currentPageComponents();
+        ObjectList<MenuComponent> pageComponents = this.getCurrentPageComponents();
 
         for (int i = 0; i < pageComponents.size(); i++) {
             if (i >= this.layoutSlots.size()) break;
@@ -203,8 +203,8 @@ public class Paginator extends MenuComponent {
             MenuComponent component = pageComponents.get(i);
             int slot = this.layoutSlots.getInt(i);
 
-            component.position(MenuComponent.toX(slot), MenuComponent.toY(slot));
-            items.putAll(component.items(context));
+            component.setPosition(MenuComponent.toX(slot), MenuComponent.toY(slot));
+            items.putAll(component.getItems(context));
         }
 
         return items;
@@ -220,7 +220,7 @@ public class Paginator extends MenuComponent {
      * @return a set of all possible slot indices for this paginator
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         // Return all slots controlled by the paginator grid
         return new IntOpenHashSet(this.layoutSlots);
     }
@@ -240,7 +240,7 @@ public class Paginator extends MenuComponent {
      *
      * @return a list of components for the current page
      */
-    private ObjectList<MenuComponent> currentPageComponents() {
+    private ObjectList<MenuComponent> getCurrentPageComponents() {
         if (this.cachedPageComponents != null)
             return this.cachedPageComponents;
 
@@ -268,7 +268,7 @@ public class Paginator extends MenuComponent {
      *
      * @return a Button for going to the previous page
      */
-    public Button backButton() {
+    public Button getBackButton() {
         return Button.create()
                 .item(context -> {
                     if (this.page > 0)
@@ -297,10 +297,10 @@ public class Paginator extends MenuComponent {
      *
      * @return a Button for going to the next page
      */
-    public Button nextButton() {
+    public Button getNextButton() {
         return Button.create()
                 .item(context -> {
-                    if (this.page < this.maxPage())
+                    if (this.page < this.getMaxPage())
                         return this.nextItem.apply(context);
 
                     if (this.offNextItem != null)
@@ -309,7 +309,7 @@ public class Paginator extends MenuComponent {
                     return ItemStack.of(Material.AIR);
                 })
                 .onClick(event -> {
-                    if (this.page >= this.maxPage())
+                    if (this.page >= this.getMaxPage())
                         return;
 
                     this.page++;
@@ -326,7 +326,7 @@ public class Paginator extends MenuComponent {
      *
      * @return a Button for going to the first page
      */
-    public Button firstPageButton() {
+    public Button getFirstPageButton() {
         return Button.create()
                 .item(context -> {
                     if (this.page > 0)
@@ -355,10 +355,10 @@ public class Paginator extends MenuComponent {
      *
      * @return a Button for going to the last page
      */
-    public Button lastPageButton() {
+    public Button getLastPageButton() {
         return Button.create()
                 .item(context -> {
-                    if (this.page < this.maxPage())
+                    if (this.page < this.getMaxPage())
                         return this.lastPageItem.apply(context);
 
                     if (this.offLastPageItem != null)
@@ -367,7 +367,7 @@ public class Paginator extends MenuComponent {
                     return ItemStack.of(Material.AIR);
                 })
                 .onClick(event -> {
-                    int maxPage = this.maxPage();
+                    int maxPage = this.getMaxPage();
                     if (this.page >= maxPage)
                         return;
 
@@ -382,7 +382,7 @@ public class Paginator extends MenuComponent {
      *
      * @return the highest valid page index, or -1 if no components exist
      */
-    public int maxPage() {
+    public int getMaxPage() {
         int maxItemsPerPage = this.width * this.height;
         int totalItems = this.components.size();
         return (int) Math.ceil((double) totalItems / maxItemsPerPage) - 1;
@@ -402,9 +402,9 @@ public class Paginator extends MenuComponent {
         Preconditions.checkNotNull(component, "component cannot be null");
 
         this.components.add(component);
-        String addedID = component.id();
+        String addedID = component.getID();
         if (addedID != null)
-            context.menu().registerComponentID(addedID, component);
+            context.getMenu().registerComponentID(addedID, component);
 
         return this;
     }
@@ -440,7 +440,7 @@ public class Paginator extends MenuComponent {
         Preconditions.checkNotNull(context, "context cannot be null");
         Preconditions.checkArgument(slot >= 0, "slot cannot be less than 0: %s", slot);
 
-        ObjectList<MenuComponent> pageComponents = this.currentPageComponents();
+        ObjectList<MenuComponent> pageComponents = this.getCurrentPageComponents();
         for (int i = 0; i < pageComponents.size(); i++) {
             if (i >= this.layoutSlots.size())
                 break;
@@ -449,15 +449,15 @@ public class Paginator extends MenuComponent {
             int targetSlot = this.layoutSlots.getInt(i);
 
             // Temporarily position to check slots
-            component.position(MenuComponent.toX(targetSlot), MenuComponent.toY(targetSlot));
+            component.setPosition(MenuComponent.toX(targetSlot), MenuComponent.toY(targetSlot));
 
-            if (!component.slots(context).contains(slot))
+            if (!component.getSlots(context).contains(slot))
                 continue;
 
             this.components.remove(component);
-            String removedID = component.id();
+            String removedID = component.getID();
             if (removedID != null)
-                context.menu().unregisterComponentID(removedID);
+                context.getMenu().unregisterComponentID(removedID);
 
             return this;
         }
@@ -478,9 +478,9 @@ public class Paginator extends MenuComponent {
         Preconditions.checkNotNull(component, "component cannot be null");
 
         this.components.remove(component);
-        String removedID = component.id();
+        String removedID = component.getID();
         if (removedID != null)
-            context.menu().unregisterComponentID(removedID);
+            context.getMenu().unregisterComponentID(removedID);
         return this;
     }
 
@@ -802,7 +802,7 @@ public class Paginator extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -813,7 +813,7 @@ public class Paginator extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 

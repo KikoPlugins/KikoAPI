@@ -109,7 +109,7 @@ public class BasicTestMenu extends Menu {
     private static Button coordinatesDynamicButton() {
         return Button.create()
                 .dynamicItem(context -> {
-                    Player player = context.menu().player();
+                    Player player = context.getMenu().getPlayer();
                     double x = player.getLocation().getX();
                     double y = player.getLocation().getY();
                     double z = player.getLocation().getZ();
@@ -162,8 +162,8 @@ public class BasicTestMenu extends Menu {
                 .addOption(ItemBuilder.of(Material.WOODEN_SWORD).name(Component.text("Survival")).build(), GameMode.SURVIVAL)
                 .addOption(ItemBuilder.of(Material.COMPASS).name(Component.text("Adventure")).build(), GameMode.ADVENTURE)
                 .addOption(ItemBuilder.of(Material.DIAMOND_BLOCK).name(Component.text("Creative")).build(), GameMode.CREATIVE)
-                .defaultOption(context -> context.player().getGameMode())
-                .onSelectionChange(event -> event.context().player().setGameMode(event.newValue()))
+                .defaultOption(context -> context.getPlayer().getGameMode())
+                .onSelectionChange(event -> event.context().getPlayer().setGameMode(event.newValue()))
                 .build();
     }
 
@@ -221,8 +221,8 @@ public class BasicTestMenu extends Menu {
      * @return a colorized title component
      */
     @Override
-    protected Component title() {
-        return Component.text("Test Menu Hehe :3", ColorUtils.primaryColor());
+    protected Component getTitle() {
+        return Component.text("Test Menu Hehe :3", ColorUtils.getPrimaryColor());
     }
 
     /**
@@ -244,7 +244,7 @@ public class BasicTestMenu extends Menu {
      * @return the root grid component containing all test components
      */
     @Override
-    protected MenuComponent root(MenuContext context) {
+    protected MenuComponent getRoot(MenuContext context) {
         return Grid.create()
                 .size(9, 6)
                 .add(0, simpleButton())

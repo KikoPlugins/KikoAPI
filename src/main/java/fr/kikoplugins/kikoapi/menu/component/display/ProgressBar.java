@@ -85,9 +85,9 @@ public class ProgressBar extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return items;
 
         double pct = Math.clamp(this.percentage.applyAsDouble(context), 0, 1);
@@ -123,7 +123,7 @@ public class ProgressBar extends MenuComponent {
      */
     private void forEachSlot(BiConsumer<Integer, Integer> consumer) {
         Traversal t = this.traversal();
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
         int idx = 0;
 
@@ -167,12 +167,12 @@ public class ProgressBar extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return slots;
 
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -312,7 +312,7 @@ public class ProgressBar extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -323,7 +323,7 @@ public class ProgressBar extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 

@@ -18,7 +18,7 @@ public enum VersionUtils {
         this.value = value;
     }
 
-    public static synchronized VersionUtils version() {
+    public static synchronized VersionUtils getVersion() {
         if (serverVersion != null)
             return serverVersion;
 
@@ -52,24 +52,24 @@ public enum VersionUtils {
     }
 
     public static boolean isHigherThan(VersionUtils target) {
-        return version().value > target.value;
+        return getVersion().value > target.value;
     }
 
     public static boolean isHigherThanOrEquals(VersionUtils target) {
-        return version().value >= target.value;
+        return getVersion().value >= target.value;
     }
 
     public static boolean isLowerThan(VersionUtils target) {
-        return version().value < target.value;
+        return getVersion().value < target.value;
     }
 
     public static boolean isLowerThanOrEquals(VersionUtils target) {
-        return version().value <= target.value;
+        return getVersion().value <= target.value;
     }
 
     @SuppressWarnings("java:S1201")
     public static boolean equals(VersionUtils target) {
-        return version().value == target.value;
+        return getVersion().value == target.value;
     }
 
     @Override

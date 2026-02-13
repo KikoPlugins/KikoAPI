@@ -24,10 +24,8 @@ public abstract class Menu implements InventoryHolder {
     protected final MenuContext context;
     private final Player player;
     private final Object2ObjectOpenHashMap<String, MenuComponent> componentIDs;
-    @Nullable
-    private Inventory inventory;
-    @Nullable
-    private MenuComponent root;
+    @Nullable private Inventory inventory;
+    @Nullable private MenuComponent root;
 
     /**
      * Constructs a new Menu for the specified player.
@@ -67,11 +65,11 @@ public abstract class Menu implements InventoryHolder {
      */
     public void open() {
         this.componentIDs.clear();
-        context.menu(this);
+        context.getMenu(this);
 
-        Component title = this.title();
-        this.root = this.root(this.context);
-        this.inventory = Bukkit.createInventory(this, this.root.height() * 9, title);
+        Component title = this.getTitle();
+        this.root = this.getRoot(this.context);
+        this.inventory = Bukkit.createInventory(this, this.root.getHeight() * 9, title);
 
         this.root.onAdd(this.context);
         this.root.render(this.context);
@@ -89,7 +87,7 @@ public abstract class Menu implements InventoryHolder {
      * existing inventory to refresh the displayed contents.</p>
      */
     public void reopen() {
-        if (context.menu() != this || this.root == null || this.inventory == null) {
+        if (context.getMenu() != this || this.root == null || this.inventory == null) {
             this.open();
             return;
         }
@@ -109,8 +107,7 @@ public abstract class Menu implements InventoryHolder {
     public void close(boolean event) {
         this.root.onRemove(this.context);
 
-        if (!event)
-            this.player.closeInventory();
+        if (!event) this.player.closeInventory();
 
         this.context.close();
         this.onClose();
@@ -134,7 +131,7 @@ public abstract class Menu implements InventoryHolder {
         // Only render if the context is still pointing to this menu
         // If onClick triggered the opening/closing of another menu we shouldn't render this menu
         // It was causing ArrayIndexOutOfBoundsException and ghost items
-        if (this.context.menu() == this)
+        if (this.context.getMenu() == this)
             this.root.render(this.context);
     }
 
@@ -175,7 +172,7 @@ public abstract class Menu implements InventoryHolder {
      *
      * @return the title component displayed at the top of the inventory
      */
-    protected abstract Component title();
+    protected abstract Component getTitle();
 
     /**
      * Indicates whether the menu can be returned to using the previous menu system.
@@ -198,7 +195,7 @@ public abstract class Menu implements InventoryHolder {
      * @param context the menu context for component interaction
      * @return the root component that defines the menu's structure
      */
-    protected abstract MenuComponent root(MenuContext context);
+    protected abstract MenuComponent getRoot(MenuContext context);
 
     /**
      * Called when the menu is opened.
@@ -225,7 +222,7 @@ public abstract class Menu implements InventoryHolder {
      *
      * @return the player who owns this menu
      */
-    public Player player() {
+    public Player getPlayer() {
         return player;
     }
 
@@ -234,7 +231,7 @@ public abstract class Menu implements InventoryHolder {
      *
      * @return the menu context used for component interaction
      */
-    public MenuContext context() {
+    public MenuContext getContext() {
         return context;
     }
 
@@ -246,7 +243,7 @@ public abstract class Menu implements InventoryHolder {
      * @throws NullPointerException if id is null
      */
     @Nullable
-    public MenuComponent componentByID(String id) {
+    public MenuComponent getComponentByID(String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
 
         return this.componentIDs.get(id);

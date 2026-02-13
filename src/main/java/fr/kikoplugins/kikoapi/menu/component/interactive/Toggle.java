@@ -88,11 +88,11 @@ public class Toggle extends MenuComponent {
      */
     @Override
     public void onClick(KikoInventoryClickEvent event, MenuContext context) {
-        if (!this.interactable())
+        if (!this.isInteractable())
             return;
 
         if (this.sound != null)
-            context.player().playSound(this.sound, Sound.Emitter.self());
+            context.getPlayer().playSound(this.sound, Sound.Emitter.self());
 
         this.currentState = !this.currentState;
         this.render(context);
@@ -113,13 +113,13 @@ public class Toggle extends MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     @Override
-    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+    public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
         Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.visible())
+        if (!this.isVisible())
             return items;
 
-        ItemStack baseItem = this.currentItem(context);
-        int baseSlot = this.slot();
+        ItemStack baseItem = this.getCurrentItem(context);
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -142,12 +142,12 @@ public class Toggle extends MenuComponent {
      * @return a set of slot indices
      */
     @Override
-    public IntSet slots(MenuContext context) {
+    public IntSet getSlots(MenuContext context) {
         IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.visible())
+        if (!this.isVisible())
             return slots;
 
-        int baseSlot = this.slot();
+        int baseSlot = this.getSlot();
         int rowLength = 9;
 
         for (int row = 0; row < this.height; row++) {
@@ -166,7 +166,7 @@ public class Toggle extends MenuComponent {
      * @param context the menu context
      * @return the appropriate ItemStack for the current state
      */
-    private ItemStack currentItem(MenuContext context) {
+    private ItemStack getCurrentItem(MenuContext context) {
         return currentState ? this.onItem.apply(context) : this.offItem.apply(context);
     }
 
@@ -276,7 +276,7 @@ public class Toggle extends MenuComponent {
      */
     @Positive
     @Override
-    public int width() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -287,7 +287,7 @@ public class Toggle extends MenuComponent {
      */
     @Positive
     @Override
-    public int height() {
+    public int getHeight() {
         return this.height;
     }
 
@@ -308,7 +308,7 @@ public class Toggle extends MenuComponent {
         @Nullable
         private Sound sound = Sound.sound(
                 Key.key("minecraft", "ui.button.click"),
-                BackwardUtils.UI_SOUND_SOURCE,
+                Sound.Source.UI,
                 1F,
                 1F
         );

@@ -34,7 +34,7 @@ public class PreviousTestMenu extends Menu {
                         .name(Component.text("Go to Previous Menu"))
                         .build())
                 .onClick(event -> {
-                    Menu previous = event.context().previousMenu();
+                    Menu previous = event.context().getPreviousMenu();
                     if (previous == null) {
                         event.player().sendMessage(Component.text("No previous menu found!", NamedTextColor.RED));
                         return;
@@ -57,12 +57,12 @@ public class PreviousTestMenu extends Menu {
     }
 
     @Override
-    protected Component title() {
-        return Component.text("Menu ID: " + System.identityHashCode(this), ColorUtils.primaryColor());
+    protected Component getTitle() {
+        return Component.text("Menu ID: " + System.identityHashCode(this), ColorUtils.getPrimaryColor());
     }
 
     @Override
-    protected MenuComponent root(MenuContext context) {
+    protected MenuComponent getRoot(MenuContext context) {
         return Grid.create()
                 .size(9, 3)
                 .add(0, previousMenuButton())

@@ -76,7 +76,7 @@ public class ConfirmationMenu extends Menu {
      * @return the title component
      */
     @Override
-    protected Component title() {
+    protected Component getTitle() {
         return this.title;
     }
 
@@ -92,7 +92,7 @@ public class ConfirmationMenu extends Menu {
      * @return the root grid component containing all menu elements
      */
     @Override
-    protected MenuComponent root(MenuContext context) {
+    protected MenuComponent getRoot(MenuContext context) {
         Grid.Builder builder = Grid.create()
                 .size(9, 3)
                 .add(11, noButton())
