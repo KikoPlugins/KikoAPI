@@ -71,7 +71,7 @@ public class UpdateChecker {
 
     private void startTask() {
         Task.asyncRepeat(task -> {
-            this.latestVersion = this.latestVersion();
+            this.latestVersion = this.getLatestVersion();
             this.noNewVersion = this.latestVersion == null || StringUtils.compareSemVer(this.currentVersion, this.latestVersion) >= 0;
 
             if (this.noNewVersion)
@@ -94,7 +94,7 @@ public class UpdateChecker {
     }
 
     @Nullable
-    private String latestVersion() {
+    private String getLatestVersion() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .GET()
