@@ -1,0 +1,329 @@
+package fr.kikoplugins.kikoapi.menu.component.display;
+
+import com.google.common.base.Preconditions;
+import fr.kikoplugins.kikoapi.menu.MenuContext;
+import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
+import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import net.kyori.adventure.sound.Sound;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.index.qual.Positive;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Function;
+
+/**
+ * A display component that shows an ItemStack without performing actions.
+ * <p>
+ * The Icon component is used for displaying decorative or informational items
+ * in menus. Unlike interactive components, icons typically don't perform actions
+ * when clicked, though they can optionally play a sound for audio feedback.
+ * Icons can span multiple slots with configurable width and height.
+ */
+@NullMarked
+public class Icon extends MenuComponent {
+    private final int width, height;
+    private Function<MenuContext, ItemStack> item;
+    @Nullable
+    private Sound sound;
+
+    /**
+     * Constructs a new Icon with the specified parameters.
+     *
+     * @param id     unique identifier for the icon
+     * @param item   function that provides the ItemStack to display
+     * @param sound  sound to play when clicked (may be null for no sound)
+     * @param width  width of the icon in slots
+     * @param height height of the icon in rows
+     */
+    private Icon(
+            String id,
+            Function<MenuContext, ItemStack> item,
+            Sound sound,
+            int width, int height
+    ) {
+        super(id);
+        this.item = item;
+
+        this.sound = sound;
+
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Creates a new Icon builder instance.
+     *
+     * @return a new Icon.Builder for constructing icons
+     */
+    @Contract(value = "-> new", pure = true)
+    public static Builder create() {
+        return new Builder();
+    }
+
+    /**
+     * Handles click events on this icon.
+     * <p>
+     * Icons only provide audio feedback when clicked - they don't perform
+     * any functional actions. If a sound is configured and the icon is
+     * interactable, the sound will be played to the player.
+     *
+     * @param event   the inventory click event
+     * @param context the menu context
+     */
+    @Override
+    public void onClick(KikoInventoryClickEvent event, MenuContext context) {
+        if (!this.interactable())
+            return;
+
+        if (this.sound == null)
+            return;
+
+        context.player().playSound(this.sound, Sound.Emitter.self());
+    }
+
+    /**
+     * Returns the items to be displayed by this icon.
+     * <p>
+     * The icon fills all slots within its widthxheight area with the
+     * same ItemStack. Returns an empty map if not visible.
+     *
+     * @param context the menu context
+     * @return a map from slot indices to ItemStacks
+     */
+    @Override
+    public Int2ObjectMap<ItemStack> items(MenuContext context) {
+        Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
+        if (!this.visible())
+            return items;
+
+        ItemStack baseItem = this.item.apply(context);
+        int baseSlot = this.slot();
+        int rowLength = 9;
+
+        for (int row = 0; row < this.height; row++) {
+            for (int col = 0; col < this.width; col++) {
+                int slot = baseSlot + col + (row * rowLength);
+                items.put(slot, baseItem);
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Returns the set of slots occupied by this icon.
+     * <p>
+     * Includes all slots within the icon's widthxheight area.
+     * Returns an empty set if not visible.
+     *
+     * @param context the menu context
+     * @return a set of slot indices
+     */
+    @Override
+    public IntSet slots(MenuContext context) {
+        IntSet slots = new IntOpenHashSet(this.width * this.height);
+        if (!this.visible())
+            return slots;
+
+        int baseSlot = this.slot();
+        int rowLength = 9;
+
+        for (int row = 0; row < this.height; row++) {
+            for (int col = 0; col < this.width; col++) {
+                int slot = baseSlot + col + (row * rowLength);
+                slots.add(slot);
+            }
+        }
+
+        return slots;
+    }
+
+    /**
+     * Sets the ItemStack to display for this icon.
+     *
+     * @param item the ItemStack to display
+     * @return this icon for method chaining
+     * @throws NullPointerException if item is null
+     */
+    @Contract(value = "_ -> this", mutates = "this")
+    public Icon item(ItemStack item) {
+        Preconditions.checkNotNull(item, "item cannot be null");
+
+        this.item = context -> item;
+        return this;
+    }
+
+    /**
+     * Sets a function to provide the ItemStack for this icon.
+     *
+     * @param item function that returns the ItemStack to display
+     * @return this icon for method chaining
+     * @throws NullPointerException if item is null
+     */
+    @Contract(value = "_ -> this", mutates = "this")
+    public Icon item(Function<MenuContext, ItemStack> item) {
+        Preconditions.checkNotNull(item, "item cannot be null");
+
+        this.item = item;
+        return this;
+    }
+
+    /**
+     * Sets the sound to play when the icon is clicked.
+     *
+     * @param sound the sound to play, or null for no sound
+     * @return this icon for method chaining
+     */
+    @Contract(value = "_ -> this", mutates = "this")
+    public Icon sound(@Nullable Sound sound) {
+        this.sound = sound;
+        return this;
+    }
+
+    /**
+     * Returns the width of this icon in slots.
+     *
+     * @return the icon width
+     */
+    @Positive
+    @Override
+    public int width() {
+        return this.width;
+    }
+
+    /**
+     * Returns the height of this icon in rows.
+     *
+     * @return the icon height
+     */
+    @Positive
+    @Override
+    public int height() {
+        return this.height;
+    }
+
+    /**
+     * Builder class for constructing Icon instances with a fluent interface.
+     */
+    public static class Builder extends MenuComponent.Builder<Builder> {
+        private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
+
+        @Nullable
+        private Sound sound = null;
+
+        private int width = 1;
+        private int height = 1;
+
+        /**
+         * Sets the ItemStack to display for this icon.
+         *
+         * @param item the ItemStack to display
+         * @return this builder for method chaining
+         * @throws NullPointerException if item is null
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder item(ItemStack item) {
+            Preconditions.checkNotNull(item, "item cannot be null");
+
+            this.item = context -> item;
+            return this;
+        }
+
+        /**
+         * Sets a function to provide the ItemStack for this icon.
+         *
+         * @param item function that returns the ItemStack to display
+         * @return this builder for method chaining
+         * @throws NullPointerException if item is null
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder item(Function<MenuContext, ItemStack> item) {
+            Preconditions.checkNotNull(item, "item cannot be null");
+
+            this.item = item;
+            return this;
+        }
+
+        /**
+         * Sets the sound to play when the icon is clicked.
+         *
+         * @param sound the sound to play, or null for no sound
+         * @return this builder for method chaining
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder sound(@Nullable Sound sound) {
+            this.sound = sound;
+            return this;
+        }
+
+        /**
+         * Sets the width of the icon in slots.
+         *
+         * @param width the width in slots (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if width is less than 1
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder width(@Positive int width) {
+            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
+
+            this.width = width;
+            return this;
+        }
+
+        /**
+         * Sets the height of the icon in rows.
+         *
+         * @param height the height in rows (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if height is less than 1
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder height(@Positive int height) {
+            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
+
+            this.height = height;
+            return this;
+        }
+
+        /**
+         * Sets both width and height of the icon.
+         *
+         * @param width  the width in slots (must be positive)
+         * @param height the height in rows (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if width or height is less than 1
+         */
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public Builder size(@Positive int width, @Positive int height) {
+            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
+            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
+
+            this.width = width;
+            this.height = height;
+            return this;
+        }
+
+        /**
+         * Builds and returns the configured Icon instance.
+         *
+         * @return a new Icon with the specified configuration
+         */
+        public Icon build() {
+            return new Icon(
+                    this.id,
+                    this.item,
+                    this.sound,
+                    this.width,
+                    this.height
+            );
+        }
+    }
+}
