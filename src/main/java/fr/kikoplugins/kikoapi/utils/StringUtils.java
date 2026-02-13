@@ -1,8 +1,14 @@
 package fr.kikoplugins.kikoapi.utils;
 
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.NullMarked;
 
-public class StringUtils {
+@NullMarked
+public final class StringUtils {
+    private StringUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Compares two semantic-version-like strings component-wise.
      *
