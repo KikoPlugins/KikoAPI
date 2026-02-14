@@ -6,12 +6,9 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -24,11 +21,9 @@ import java.util.function.Function;
  * The Icon component is used for displaying decorative or informational items
  * in menus. Unlike interactive components, icons typically don't perform actions
  * when clicked, though they can optionally play a sound for audio feedback.
- * Icons can span multiple slots with configurable width and height.
  */
 @NullMarked
 public class Icon extends MenuComponent {
-    private final int width, height;
     private Function<MenuContext, ItemStack> item;
     @Nullable
     private Sound sound;
@@ -39,13 +34,10 @@ public class Icon extends MenuComponent {
      * @param builder the builder containing the icon configuration
      */
     private Icon(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.item = builder.item;
 
         this.sound = builder.sound;
-
-        this.width = builder.width;
-        this.height = builder.height;
     }
 
     /**
@@ -109,34 +101,6 @@ public class Icon extends MenuComponent {
     }
 
     /**
-     * Returns the set of slots occupied by this icon.
-     * <p>
-     * Includes all slots within the icon's widthxheight area.
-     * Returns an empty set if not visible.
-     *
-     * @param context the menu context
-     * @return a set of slot indices
-     */
-    @Override
-    public IntSet getSlots(MenuContext context) {
-        IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.isVisible())
-            return slots;
-
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                slots.add(slot);
-            }
-        }
-
-        return slots;
-    }
-
-    /**
      * Sets the ItemStack to display for this icon.
      *
      * @param item the ItemStack to display
@@ -179,38 +143,12 @@ public class Icon extends MenuComponent {
     }
 
     /**
-     * Returns the width of this icon in slots.
-     *
-     * @return the icon width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this icon in rows.
-     *
-     * @return the icon height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    /**
      * Builder class for constructing Icon instances with a fluent interface.
      */
     public static class Builder extends MenuComponent.Builder<Builder> {
         private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
 
-        @Nullable
-        private Sound sound = null;
-
-        private int width = 1;
-        private int height = 1;
+        @Nullable private Sound sound = null;
 
         /**
          * Sets the ItemStack to display for this icon.
@@ -251,54 +189,6 @@ public class Icon extends MenuComponent {
         @Contract(value = "_ -> this", mutates = "this")
         public Builder sound(@Nullable Sound sound) {
             this.sound = sound;
-            return this;
-        }
-
-        /**
-         * Sets the width of the icon in slots.
-         *
-         * @param width the width in slots (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of the icon in rows.
-         *
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if height is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of the icon.
-         *
-         * @param width  the width in slots (must be positive)
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width or height is less than 1
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 

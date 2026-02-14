@@ -6,13 +6,10 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -30,7 +27,6 @@ import java.util.function.Function;
  */
 @NullMarked
 public class Toggle extends MenuComponent {
-    private final int width, height;
     private Function<MenuContext, ItemStack> onItem, offItem;
     @Nullable
     private Consumer<ToggleEvent> onToggle;
@@ -44,7 +40,7 @@ public class Toggle extends MenuComponent {
      * @param builder the builder containing the toggle configuration
      */
     private Toggle(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.onItem = builder.onItem;
         this.offItem = builder.offItem;
 
@@ -53,9 +49,6 @@ public class Toggle extends MenuComponent {
         this.sound = builder.sound;
 
         this.currentState = builder.currentState;
-
-        this.width = builder.width;
-        this.height = builder.height;
     }
 
     /**
@@ -121,34 +114,6 @@ public class Toggle extends MenuComponent {
         }
 
         return items;
-    }
-
-    /**
-     * Returns the set of slots occupied by this toggle.
-     * <p>
-     * Includes all slots within the toggle's widthxheight area.
-     * Returns an empty set if not visible.
-     *
-     * @param context the menu context
-     * @return a set of slot indices
-     */
-    @Override
-    public IntSet getSlots(MenuContext context) {
-        IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.isVisible())
-            return slots;
-
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                slots.add(slot);
-            }
-        }
-
-        return slots;
     }
 
     /**
@@ -260,28 +225,6 @@ public class Toggle extends MenuComponent {
         return this;
     }
 
-    /**
-     * Returns the width of this toggle in slots.
-     *
-     * @return the toggle width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this toggle in rows.
-     *
-     * @return the toggle height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
     public record ToggleEvent(KikoInventoryClickEvent clickEvent, boolean newState) {}
 
     /**
@@ -303,9 +246,6 @@ public class Toggle extends MenuComponent {
         );
 
         private boolean currentState;
-
-        private int width = 1;
-        private int height = 1;
 
         /**
          * Sets the ItemStack to display when the toggle is in the "on" state.
@@ -396,51 +336,6 @@ public class Toggle extends MenuComponent {
         @Contract(value = "_ -> this", mutates = "this")
         public Builder currentState(boolean state) {
             this.currentState = state;
-            return this;
-        }
-
-        /**
-         * Sets the width of the toggle in slots.
-         *
-         * @param width the width in slots
-         * @return this builder for method chaining
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of the toggle in rows.
-         *
-         * @param height the height in rows
-         * @return this builder for method chaining
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of the toggle.
-         *
-         * @param width  the width in slots
-         * @param height the height in rows
-         * @return this builder for method chaining
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 

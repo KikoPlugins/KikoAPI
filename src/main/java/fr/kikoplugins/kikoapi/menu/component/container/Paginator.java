@@ -12,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -32,7 +31,6 @@ import java.util.function.Function;
 @NullMarked
 public class Paginator extends MenuComponent {
     private final ObjectList<MenuComponent> components;
-    private final int width, height;
     private final IntList layoutSlots;
     private Function<MenuContext, ItemStack> backItem, nextItem;
     @Nullable private Function<MenuContext, ItemStack> firstPageItem, lastPageItem;
@@ -46,7 +44,7 @@ public class Paginator extends MenuComponent {
      * @param builder the builder containing the paginator configuration
      */
     private Paginator(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.components = new ObjectArrayList<>(builder.components);
 
         this.backItem = builder.backItem;
@@ -58,9 +56,6 @@ public class Paginator extends MenuComponent {
         this.lastPageItem = builder.lastPageItem;
         this.offFirstPageItem = builder.offFirstPageItem;
         this.offLastPageItem = builder.offLastPageItem;
-
-        this.width = builder.width;
-        this.height = builder.height;
 
         this.page = builder.page;
 
@@ -130,13 +125,6 @@ public class Paginator extends MenuComponent {
                 this.layoutSlots.add(MenuComponent.toSlot(absX, absY));
             }
         }
-    }
-
-    @Override
-    public void setPosition(@NonNegative int x, @NonNegative int y) {
-        super.setPosition(x, y);
-        // Position changed, we must re-calculate the absolute slots for the grid
-        this.updateLayoutSlots();
     }
 
     /**
@@ -779,28 +767,6 @@ public class Paginator extends MenuComponent {
     }
 
     /**
-     * Returns the width of this paginator in slots.
-     *
-     * @return the paginator width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this paginator in rows.
-     *
-     * @return the paginator height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    /**
      * Builder class for constructing Paginator instances with a fluent interface.
      */
     public static class Builder extends MenuComponent.Builder<Builder> {
@@ -815,9 +781,6 @@ public class Paginator extends MenuComponent {
         private Function<MenuContext, ItemStack> offBackItem, offNextItem, offFirstPageItem, offLastPageItem;
 
         private int page;
-
-        private int width = 1;
-        private int height = 1;
 
         /**
          * Adds a component to the paginator.
@@ -1106,54 +1069,6 @@ public class Paginator extends MenuComponent {
             Preconditions.checkArgument(page >= 0, "page cannot be less than 0: %s", page);
 
             this.page = page;
-            return this;
-        }
-
-        /**
-         * Sets the width of the paginator in slots.
-         *
-         * @param width the width in slots (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of the paginator in rows.
-         *
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if height is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of the paginator.
-         *
-         * @param width  the width in slots (must be positive)
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width or height is less than 1
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 

@@ -8,15 +8,12 @@ import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -35,7 +32,6 @@ import java.util.function.Function;
  */
 @NullMarked
 public class DoubleDropButton extends MenuComponent {
-    private final int width, height;
     private Function<MenuContext, ItemStack> item;
     private Function<MenuContext, ItemStack> dropItem;
     @Nullable
@@ -51,7 +47,7 @@ public class DoubleDropButton extends MenuComponent {
      * @param builder the builder containing the double drop button configuration
      */
     private DoubleDropButton(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.item = builder.item;
         this.dropItem = builder.dropItem;
 
@@ -63,9 +59,6 @@ public class DoubleDropButton extends MenuComponent {
         this.onDoubleDrop = builder.onDoubleDrop;
 
         this.sound = builder.sound;
-
-        this.width = builder.width;
-        this.height = builder.height;
     }
 
     /**
@@ -192,34 +185,6 @@ public class DoubleDropButton extends MenuComponent {
         }
 
         return items;
-    }
-
-    /**
-     * Returns the set of slots occupied by this button.
-     * <p>
-     * Includes all slots within the button's widthxheight area.
-     * Returns an empty set if not visible.
-     *
-     * @param context the menu context
-     * @return a set of slot indices
-     */
-    @Override
-    public IntSet getSlots(MenuContext context) {
-        IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.isVisible())
-            return slots;
-
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                slots.add(slot);
-            }
-        }
-
-        return slots;
     }
 
     /**
@@ -385,28 +350,6 @@ public class DoubleDropButton extends MenuComponent {
     }
 
     /**
-     * Returns the width of this button in slots.
-     *
-     * @return the button width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this button in rows.
-     *
-     * @return the button height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    /**
      * Gets the ItemStack to display based on the current button state.
      *
      * @param context the menu context
@@ -433,9 +376,6 @@ public class DoubleDropButton extends MenuComponent {
                 1F,
                 1F
         );
-
-        private int width = 1;
-        private int height = 1;
 
         /**
          * Sets the ItemStack to display in normal state.
@@ -596,54 +536,6 @@ public class DoubleDropButton extends MenuComponent {
         @Contract(value = "_ -> this", mutates = "this")
         public Builder sound(@Nullable Sound sound) {
             this.sound = sound;
-            return this;
-        }
-
-        /**
-         * Sets the width of the button in slots.
-         *
-         * @param width the width in slots (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of the button in rows.
-         *
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if height is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of the button.
-         *
-         * @param width  the width in slots (must be positive)
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width or height is less than 1
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 

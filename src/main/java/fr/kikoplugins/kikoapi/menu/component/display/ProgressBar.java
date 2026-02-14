@@ -4,12 +4,13 @@ import com.google.common.base.Preconditions;
 import fr.kikoplugins.kikoapi.menu.MenuContext;
 import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.utils.Direction;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleFunction;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
@@ -30,7 +31,6 @@ import java.util.function.Function;
 @NullMarked
 public class ProgressBar extends MenuComponent {
     private final Direction.Default direction;
-    private final int width, height;
     private Function<MenuContext, ItemStack> doneItem, currentItem, notDoneItem;
     private Object2DoubleFunction<MenuContext> percentage;
 
@@ -40,7 +40,7 @@ public class ProgressBar extends MenuComponent {
      * @param builder the builder containing the progress bar configuration
      */
     private ProgressBar(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.doneItem = builder.doneItem;
         this.currentItem = builder.currentItem;
         this.notDoneItem = builder.notDoneItem;
@@ -48,8 +48,6 @@ public class ProgressBar extends MenuComponent {
         this.direction = builder.direction;
         this.percentage = builder.percentage;
 
-        this.width = builder.width;
-        this.height = builder.height;
     }
 
     /**
@@ -144,34 +142,6 @@ public class ProgressBar extends MenuComponent {
             case RIGHT -> new Traversal(rowsRange, colsRange, true);
             case DOWN -> new Traversal(rowsRange, colsRange, false);
         };
-    }
-
-    /**
-     * Returns the set of slots occupied by this progress bar.
-     * <p>
-     * Includes all slots within the progress bar's widthxheight area.
-     * Returns an empty set if not visible.
-     *
-     * @param context the menu context
-     * @return a set of slot indices
-     */
-    @Override
-    public IntSet getSlots(MenuContext context) {
-        IntSet slots = new IntOpenHashSet(this.width * this.height);
-        if (!this.isVisible())
-            return slots;
-
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                slots.add(slot);
-            }
-        }
-
-        return slots;
     }
 
     /**
@@ -295,28 +265,6 @@ public class ProgressBar extends MenuComponent {
     }
 
     /**
-     * Returns the width of this progress bar in slots.
-     *
-     * @return the progress bar width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this progress bar in rows.
-     *
-     * @return the progress bar height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    /**
      * Record representing a range for iteration with start, end, and step values.
      *
      * @param start        the starting index
@@ -349,9 +297,6 @@ public class ProgressBar extends MenuComponent {
         private Direction.Default direction = Direction.Default.RIGHT;
 
         private Object2DoubleFunction<MenuContext> percentage = context -> 0D;
-
-        private int width = 1;
-        private int height = 1;
 
         /**
          * Sets the ItemStack to display for completed sections.
@@ -485,54 +430,6 @@ public class ProgressBar extends MenuComponent {
             Preconditions.checkNotNull(percentage, "percentage cannot be null");
 
             this.percentage = percentage;
-            return this;
-        }
-
-        /**
-         * Sets the width of the progress bar in slots.
-         *
-         * @param width the width in slots (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of the progress bar in rows.
-         *
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if height is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of the progress bar.
-         *
-         * @param width  the width in slots (must be positive)
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width or height is less than 1
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 

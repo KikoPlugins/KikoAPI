@@ -4,11 +4,11 @@ import com.google.common.base.Preconditions;
 import fr.kikoplugins.kikoapi.menu.MenuContext;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -31,13 +31,17 @@ public abstract class MenuComponent {
     private int x = 0;
     private int y = 0;
 
+    protected final int width, height;
+
     /**
      * Constructs a new MenuComponent with the specified ID.
      *
-     * @param id the unique identifier for this component, or null for a default ID
+     * @param builder the builder containing the component configuration
      */
-    protected MenuComponent(@Nullable String id) {
-        this.id = id;
+    protected MenuComponent(Builder<?> builder) {
+        this.id = builder.id;
+        this.width = builder.width;
+        this.height = builder.height;
     }
 
     /**
@@ -130,7 +134,23 @@ public abstract class MenuComponent {
      * @param context the menu context
      * @return a set of slot indices
      */
-    public abstract IntSet getSlots(MenuContext context);
+    public IntSet getSlots(MenuContext context) {
+        IntSet slots = new IntOpenHashSet(this.width * this.height);
+        if (!this.isVisible())
+            return slots;
+
+        int baseSlot = this.getSlot();
+        int rowLength = 9;
+
+        for (int row = 0; row < this.height; row++) {
+            for (int col = 0; col < this.width; col++) {
+                int slot = baseSlot + col + (row * rowLength);
+                slots.add(slot);
+            }
+        }
+
+        return slots;
+    }
 
     /**
      * Renders this component to the menu's inventory.
@@ -202,20 +222,24 @@ public abstract class MenuComponent {
     }
 
     /**
-     * Returns the width of this component in inventory slots.
+     * Returns the width of this component in slots.
      *
-     * @return the component width (must be positive)
+     * @return the component width
      */
     @Positive
-    public abstract int getWidth();
+    public int getWidth() {
+        return this.width;
+    }
 
     /**
-     * Returns the height of this component in inventory rows.
+     * Returns the height of this component in rows.
      *
-     * @return the component height (must be positive)
+     * @return the component height
      */
     @Positive
-    public abstract int getHeight();
+    public int getHeight() {
+        return this.height;
+    }
 
     /**
      * Returns the inventory slot index for this component's top-left position.
@@ -274,8 +298,10 @@ public abstract class MenuComponent {
         return this.visible && this.enabled;
     }
 
+    @SuppressWarnings("unchecked")
     protected static class Builder<T> {
         @Nullable protected String id;
+        protected int width, height;
 
         /**
          * Sets the ID for this component.
@@ -284,7 +310,6 @@ public abstract class MenuComponent {
          * @return this builder for method chaining
          * @throws NullPointerException if id is null
          */
-        @SuppressWarnings("unchecked")
         @Contract(value = "_ -> this", mutates = "this")
         public T id(String id) {
             Preconditions.checkNotNull(id, "id cannot be null");
@@ -293,10 +318,52 @@ public abstract class MenuComponent {
             return (T) this;
         }
 
-        @ApiStatus.Internal
-        @Nullable
-        public String id() {
-            return id;
+        /**
+         * Sets the width of the component in slots.
+         *
+         * @param width the width in slots (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if width is less than 1
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public T width(@Positive int width) {
+            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
+
+            this.width = width;
+            return (T) this;
+        }
+
+        /**
+         * Sets the height of the component in rows.
+         *
+         * @param height the height in rows (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if height is less than 1
+         */
+        @Contract(value = "_ -> this", mutates = "this")
+        public T height(@Positive int height) {
+            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
+
+            this.height = height;
+            return (T) this;
+        }
+
+        /**
+         * Sets both width and height of the component.
+         *
+         * @param width  the width in slots (must be positive)
+         * @param height the height in rows (must be positive)
+         * @return this builder for method chaining
+         * @throws IllegalArgumentException if width or height is less than 1
+         */
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public T size(@Positive int width, @Positive int height) {
+            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
+            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
+
+            this.width = width;
+            this.height = height;
+            return (T) this;
         }
     }
 }

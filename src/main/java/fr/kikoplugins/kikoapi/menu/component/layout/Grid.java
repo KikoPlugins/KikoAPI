@@ -6,13 +6,10 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.index.qual.Positive;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -27,8 +24,6 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 public class Grid extends MenuComponent {
-    private final int width, height;
-
     private final ObjectList<MenuComponent> slotComponents;
 
     @Nullable private final ItemStack border;
@@ -40,14 +35,11 @@ public class Grid extends MenuComponent {
      * @param builder the builder containing the builder configuration
      */
     private Grid(Builder builder) {
-        super(builder.id());
+        super(builder);
         this.slotComponents = new ObjectArrayList<>(builder.slotComponents);
 
         this.border = builder.border;
         this.fill = builder.fill;
-
-        this.width = builder.width;
-        this.height = builder.height;
     }
 
     /**
@@ -156,54 +148,6 @@ public class Grid extends MenuComponent {
     }
 
     /**
-     * Returns the set of slots occupied by this grid.
-     * <p>
-     * Includes all slots occupied by child components, plus any slots
-     * that would contain border or fill items.
-     *
-     * @param context the menu context
-     * @return a set of slot indices
-     */
-    @Override
-    public IntSet getSlots(MenuContext context) {
-        IntSet slots = new IntOpenHashSet();
-
-        int startX = this.getX();
-        int startY = this.getY();
-
-        for (int y = 0; y < this.height; y++) {
-            for (int x = 0; x < this.width; x++) {
-                int slot = toSlot(startX + x, startY + y);
-                slots.add(slot);
-            }
-        }
-
-        return slots;
-    }
-
-    /**
-     * Returns the width of this grid in slots.
-     *
-     * @return the grid width
-     */
-    @Positive
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    /**
-     * Returns the height of this grid in rows.
-     *
-     * @return the grid height
-     */
-    @Positive
-    @Override
-    public int getHeight() {
-        return this.height;
-    }
-
-    /**
      * Determines if the specified coordinates represent a border position.
      *
      * @param x the absolute x-coordinate
@@ -222,7 +166,6 @@ public class Grid extends MenuComponent {
      */
     public static class Builder extends MenuComponent.Builder<Builder> {
         private final ObjectList<MenuComponent> slotComponents = new ObjectArrayList<>();
-        private int width, height;
         @Nullable
         private ItemStack border;
         @Nullable
@@ -310,54 +253,6 @@ public class Grid extends MenuComponent {
             Preconditions.checkNotNull(fill, "fill cannot be null");
 
             this.fill = fill;
-            return this;
-        }
-
-        /**
-         * Sets the width of this grid.
-         *
-         * @param width the width in slots (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder width(@Positive int width) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-
-            this.width = width;
-            return this;
-        }
-
-        /**
-         * Sets the height of this grid.
-         *
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if height is less than 1
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder height(@Positive int height) {
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.height = height;
-            return this;
-        }
-
-        /**
-         * Sets both width and height of this grid.
-         *
-         * @param width  the width in slots (must be positive)
-         * @param height the height in rows (must be positive)
-         * @return this builder for method chaining
-         * @throws IllegalArgumentException if width or height is less than 1
-         */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder size(@Positive int width, @Positive int height) {
-            Preconditions.checkArgument(width >= 1, "width cannot be less than 1: %s", width);
-            Preconditions.checkArgument(height >= 1, "height cannot be less than 1: %s", height);
-
-            this.width = width;
-            this.height = height;
             return this;
         }
 
