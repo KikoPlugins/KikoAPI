@@ -1,0 +1,60 @@
+:root {
+    --vp-nav-bg-color: rgba(22, 22, 26, 0.7);
+    --vp-nav-border-color: rgba(255, 255, 255, 0.08);
+}
+
+.VPNav {
+    background-color: var(--vp-nav-bg-color) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--vp-nav-border-color);
+    transition: background-color 0.5s, border-color 0.5s;
+}
+
+.VPNavBar,
+.VPLocalNav,
+.VPNavBar:not(.home.top) .content-body {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    border-bottom: none !important;
+}
+
+.VPNavBarSearchButton {
+    border-radius: 8px !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid var(--vp-nav-border-color) !important;
+    transition: all 0.2s ease;
+}
+
+.VPNavBarSearchButton:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--vp-c-brand-1) !important;
+}
+
+.VPNavBarMenuLink {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--vp-c-text-2);
+    transition: color 0.25s;
+}
+
+.VPNavBarMenuLink:hover {
+    color: var(--vp-c-brand-1) !important;
+}
+
+.VPNav .divider-line {
+    background-color: var(--vp-nav-border-color) !important;
+    width: 1px !important;
+}
+
+.curtain {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(4px);
+}
+
+@media (max-width: 959px) {
+    .VPLocalNav {
+        background-color: var(--vp-nav-bg-color) !important;
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--vp-nav-border-color);
+    }
+}

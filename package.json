@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@theojs/lumen": "^6.4.5",
+    "sass": "^1.97.3"
+  },
+  "devDependencies": {
+    "vitepress": "^2.0.0-alpha.16"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  }
+}
