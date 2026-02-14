@@ -85,10 +85,10 @@ public class PaginatedTestMenu extends Menu {
                     return Button.create()
                             .item(itemStack)
                             .onClick(event -> {
-                                event.player().sendMessage(Component.translatable(event.getCurrentItem().translationKey()));
+                                event.getPlayer().sendMessage(Component.translatable(event.getCurrentItem().translationKey()));
 
-                                MenuContext ctx = event.context();
-                                paginator.remove(ctx, event.slot());
+                                MenuContext ctx = event.getContext();
+                                paginator.remove(ctx, event.getSlot());
                                 paginator.render(ctx);
                             })
                             .build();

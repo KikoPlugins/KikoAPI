@@ -122,7 +122,7 @@ public class Grid extends MenuComponent {
             return;
 
         for (MenuComponent component : this.slotComponents) {
-            if (component.getSlots(context).contains(event.slot())) {
+            if (component.getSlots(context).contains(event.getSlot())) {
                 component.onClick(event, context);
                 break;
             }

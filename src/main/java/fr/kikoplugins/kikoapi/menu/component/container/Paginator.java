@@ -176,7 +176,7 @@ public class Paginator extends MenuComponent {
                 break; // Should not happen if page size matches, but safety check
 
             MenuComponent component = pageComponents.get(i);
-            if (component.getSlots(context).contains(event.slot())) {
+            if (component.getSlots(context).contains(event.getSlot())) {
                 component.onClick(event, context);
                 return;
             }
@@ -284,7 +284,7 @@ public class Paginator extends MenuComponent {
                         return;
 
                     this.page--;
-                    this.render(event.context());
+                    this.render(event.getContext());
                 })
                 .build();
     }
@@ -313,7 +313,7 @@ public class Paginator extends MenuComponent {
                         return;
 
                     this.page++;
-                    this.render(event.context());
+                    this.render(event.getContext());
                 })
                 .build();
     }
@@ -342,7 +342,7 @@ public class Paginator extends MenuComponent {
                         return;
 
                     this.page = 0;
-                    this.render(event.context());
+                    this.render(event.getContext());
                 })
                 .build();
     }
@@ -372,7 +372,7 @@ public class Paginator extends MenuComponent {
                         return;
 
                     this.page = maxPage;
-                    this.render(event.context());
+                    this.render(event.getContext());
                 })
                 .build();
     }

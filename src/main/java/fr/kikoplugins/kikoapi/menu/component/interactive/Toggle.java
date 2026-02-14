@@ -291,9 +291,7 @@ public class Toggle extends MenuComponent {
         return this.height;
     }
 
-    public record ToggleEvent(KikoInventoryClickEvent clickEvent, boolean newState) {
-
-    }
+    public record ToggleEvent(KikoInventoryClickEvent clickEvent, boolean newState) {}
 
     /**
      * Builder class for constructing Toggle instances with a fluent interface.

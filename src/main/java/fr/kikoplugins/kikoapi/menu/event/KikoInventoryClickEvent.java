@@ -74,17 +74,8 @@ public class KikoInventoryClickEvent extends InventoryClickEvent {
      *
      * @return the player who performed the click action
      */
-    public Player player() {
+    public Player getPlayer() {
         return (Player) getWhoClicked();
-    }
-
-    /**
-     * Returns the slot index that was clicked.
-     *
-     * @return the clicked slot index
-     */
-    public int slot() {
-        return getSlot();
     }
 
     /**
@@ -92,7 +83,7 @@ public class KikoInventoryClickEvent extends InventoryClickEvent {
      *
      * @return the menu context
      */
-    public MenuContext context() {
-        return context;
+    public MenuContext getContext() {
+        return this.context;
     }
 }

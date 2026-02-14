@@ -91,7 +91,7 @@ public class DynamicTestMenu extends Menu {
 
                     this.currentProgress -= 10;
                     updateComponents();
-                    click.player().sendMessage("Progress: " + currentProgress + "%");
+                    click.getPlayer().sendMessage("Progress: " + currentProgress + "%");
                 })
                 .build();
 
@@ -113,7 +113,7 @@ public class DynamicTestMenu extends Menu {
 
                     this.currentProgress += 10;
                     updateComponents();
-                    click.player().sendMessage("Progress: " + currentProgress + "%");
+                    click.getPlayer().sendMessage("Progress: " + currentProgress + "%");
                 })
                 .build();
 
@@ -124,7 +124,7 @@ public class DynamicTestMenu extends Menu {
                 .onClick(click -> {
                     this.currentProgress = 0;
                     updateComponents();
-                    click.player().sendMessage("Progress reset to 0%");
+                    click.getPlayer().sendMessage("Progress reset to 0%");
                 })
                 .build();
 

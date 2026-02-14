@@ -49,11 +49,11 @@ public class BasicTestMenu extends Menu {
         return Button.create()
                 .item(ItemStack.of(Material.APPLE))
                 .onClick(click -> {
-                    click.player().sendRichMessage("<rainbow>You clicked the apple!");
+                    click.getPlayer().sendRichMessage("<rainbow>You clicked the apple!");
                 })
                 .onDrop(click -> {
-                    click.player().sendRichMessage("<red>Newton");
-                    click.player().closeInventory();
+                    click.getPlayer().sendRichMessage("<red>Newton");
+                    click.getPlayer().closeInventory();
                 })
                 .build();
     }
@@ -67,16 +67,16 @@ public class BasicTestMenu extends Menu {
         return Button.create()
                 .size(2, 2)
                 .animationFrames(context ->
-                        ObjectList.of(ItemStack.of(Material.RED_WOOL),
+                        ObjectList.of(ItemStack.of(Material.SKELETON_SKULL),
                                 ItemStack.of(Material.ORANGE_WOOL),
-                                ItemStack.of(Material.YELLOW_WOOL),
+                                ItemStack.of(Material.END_ROD),
                                 ItemStack.of(Material.LIME_WOOL),
                                 ItemStack.of(Material.BLUE_WOOL),
                                 ItemStack.of(Material.PURPLE_WOOL))
                 )
-                .animationInterval(5)
+                .animationInterval(1)
                 .onClick(click -> {
-                    click.player().sendRichMessage("<rainbow>You clicked the animated button!");
+                    click.getPlayer().sendRichMessage("<rainbow>You clicked the animated button!");
                 })
                 .build();
     }
@@ -96,7 +96,7 @@ public class BasicTestMenu extends Menu {
                 })
                 .updateInterval(20)
                 .onClick(click -> {
-                    click.player().sendRichMessage("<green>This button shows the current seconds!");
+                    click.getPlayer().sendRichMessage("<green>This button shows the current seconds!");
                 })
                 .build();
     }
@@ -119,7 +119,7 @@ public class BasicTestMenu extends Menu {
                 })
                 .updateInterval(1)
                 .onClick(click -> {
-                    click.player().sendRichMessage("<green>This button shows your current coordinates!");
+                    click.getPlayer().sendRichMessage("<green>This button shows your current coordinates!");
                 })
                 .build();
     }
@@ -134,7 +134,7 @@ public class BasicTestMenu extends Menu {
                 .onItem(ItemStack.of(Material.LIME_DYE))
                 .offItem(ItemStack.of(Material.RED_DYE))
                 .onToggle(event -> {
-                    event.clickEvent().player().sendRichMessage("<bold>" + event.newState());
+                    event.clickEvent().getPlayer().sendRichMessage("<bold>" + event.newState());
                 })
                 .build();
     }
@@ -177,7 +177,7 @@ public class BasicTestMenu extends Menu {
                 .item(ItemBuilder.of(Material.CHEST).name(Component.text("Just a chest")).build())
                 .dropItem(ItemBuilder.of(Material.ALLAY_SPAWN_EGG).name(Component.text("Are you sure ?")).build())
                 .onDoubleDrop(event -> {
-                    Player player = event.player();
+                    Player player = event.getPlayer();
                     player.sendRichMessage("<gold>You have double-dropped the chest button!");
                 })
                 .build();

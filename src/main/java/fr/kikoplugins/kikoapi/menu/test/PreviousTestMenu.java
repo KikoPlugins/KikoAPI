@@ -34,9 +34,9 @@ public class PreviousTestMenu extends Menu {
                         .name(Component.text("Go to Previous Menu"))
                         .build())
                 .onClick(event -> {
-                    Menu previous = event.context().getPreviousMenu();
+                    Menu previous = event.getContext().getPreviousMenu();
                     if (previous == null) {
-                        event.player().sendMessage(Component.text("No previous menu found!", NamedTextColor.RED));
+                        event.getPlayer().sendMessage(Component.text("No previous menu found!", NamedTextColor.RED));
                         return;
                     }
 
@@ -51,7 +51,7 @@ public class PreviousTestMenu extends Menu {
                         .name(Component.text("Go to Next Menu"))
                         .build())
                 .onClick(event -> {
-                    new PreviousTestMenu(event.player(), event.context()).open();
+                    new PreviousTestMenu(event.getPlayer(), event.getContext()).open();
                 })
                 .build();
     }

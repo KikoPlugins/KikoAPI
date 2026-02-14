@@ -54,8 +54,8 @@ public class KikoAPITestCommand {
                             ItemBuilder.of(Material.LIME_DYE).name(Component.text("Yes", NamedTextColor.GREEN)).build(),
                             ItemBuilder.of(Material.RED_DYE).name(Component.text("No", NamedTextColor.RED)).build(),
                             ItemBuilder.of(Material.OAK_SIGN).name(Component.text("This action is irreversible")).build(),
-                            event -> event.player().sendRichMessage("You clicked <green>Yes"),
-                            event -> event.player().sendRichMessage("You clicked <red>No")
+                            event -> event.getPlayer().sendRichMessage("You clicked <green>Yes"),
+                            event -> event.getPlayer().sendRichMessage("You clicked <red>No")
                     );
                     menu.open();
 
