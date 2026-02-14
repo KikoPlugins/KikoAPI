@@ -7,7 +7,6 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
@@ -169,22 +168,7 @@ public class DoubleDropButton extends MenuComponent {
      */
     @Override
     public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
-        Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.isVisible())
-            return items;
-
-        ItemStack baseItem = this.currentItem(context);
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                items.put(slot, baseItem);
-            }
-        }
-
-        return items;
+        return this.getItems(context, this.getCurrentItem(context));
     }
 
     /**
@@ -355,7 +339,7 @@ public class DoubleDropButton extends MenuComponent {
      * @param context the menu context
      * @return the normal item if no drop task is active, otherwise the drop item
      */
-    private ItemStack currentItem(MenuContext context) {
+    private ItemStack getCurrentItem(MenuContext context) {
         return this.dropTask == null ? this.item.apply(context) : this.dropItem.apply(context);
     }
 

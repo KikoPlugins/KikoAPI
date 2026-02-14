@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import fr.kikoplugins.kikoapi.menu.MenuContext;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.inventory.ItemStack;
@@ -124,6 +125,34 @@ public abstract class MenuComponent {
      * @return a map from slot indices to ItemStacks
      */
     public abstract Int2ObjectMap<ItemStack> getItems(MenuContext context);
+
+    /**
+     * Helper method to create a uniform item map for the component's area.
+     * <p>
+     * This method fills all slots within the component's widthxheight area
+     * with the same ItemStack. Returns an empty map if not visible.
+     *
+     * @param context   the menu context
+     * @param itemStack the ItemStack to fill the component area with
+     * @return a map from slot indices to the provided ItemStack
+     */
+    protected Int2ObjectMap<ItemStack> getItems(MenuContext context, ItemStack itemStack) {
+        Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>(this.height * this.width);
+        if (!this.isVisible())
+            return items;
+
+        int baseSlot = this.getSlot();
+        int rowLength = 9;
+
+        for (int row = 0; row < this.height; row++) {
+            for (int col = 0; col < this.width; col++) {
+                int slot = baseSlot + col + (row * rowLength);
+                items.put(slot, itemStack);
+            }
+        }
+
+        return items;
+    }
 
     /**
      * Returns the set of inventory slot indices that this component occupies.

@@ -5,7 +5,6 @@ import fr.kikoplugins.kikoapi.menu.MenuContext;
 import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -82,22 +81,7 @@ public class Icon extends MenuComponent {
      */
     @Override
     public Int2ObjectMap<ItemStack> getItems(MenuContext context) {
-        Int2ObjectMap<ItemStack> items = new Int2ObjectOpenHashMap<>();
-        if (!this.isVisible())
-            return items;
-
-        ItemStack baseItem = this.item.apply(context);
-        int baseSlot = this.getSlot();
-        int rowLength = 9;
-
-        for (int row = 0; row < this.height; row++) {
-            for (int col = 0; col < this.width; col++) {
-                int slot = baseSlot + col + (row * rowLength);
-                items.put(slot, baseItem);
-            }
-        }
-
-        return items;
+        return this.getItems(context, this.item.apply(context));
     }
 
     /**
