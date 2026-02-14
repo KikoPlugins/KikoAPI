@@ -905,12 +905,11 @@ public class Lang {
     /**
      * Reloads all language files and configuration from disk.
      * Clears all caches and re-reads configs.
+     * Don't forget to reload your plugin's config before calling this if you want to apply config changes (e.g., default locale, use-player-locale).
      */
     @SuppressWarnings("unchecked")
     public void reload() {
         logger.info("Reloading language files for {}", plugin.getName());
-
-        plugin.reloadConfig();
 
         synchronized (this) {
             messages.clear();
