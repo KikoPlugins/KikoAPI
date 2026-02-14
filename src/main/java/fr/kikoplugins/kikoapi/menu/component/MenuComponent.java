@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -274,7 +275,7 @@ public abstract class MenuComponent {
     }
 
     protected static class Builder<T> {
-        protected String id;
+        @Nullable protected String id;
 
         /**
          * Sets the ID for this component.
@@ -290,6 +291,12 @@ public abstract class MenuComponent {
 
             this.id = id;
             return (T) this;
+        }
+
+        @ApiStatus.Internal
+        @Nullable
+        public String id() {
+            return id;
         }
     }
 }

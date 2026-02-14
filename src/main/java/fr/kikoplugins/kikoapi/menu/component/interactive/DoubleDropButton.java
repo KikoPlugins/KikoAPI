@@ -46,47 +46,26 @@ public class DoubleDropButton extends MenuComponent {
     private BukkitTask dropTask;
 
     /**
-     * Constructs a new DoubleDropButton with the specified parameters.
+     * Constructs a new DoubleDropButton with the specified configuration.
      *
-     * @param id                unique identifier for the button
-     * @param item              function that provides the normal ItemStack
-     * @param dropItem          function that provides the drop state ItemStack
-     * @param onClick           general click handler for mouse clicks
-     * @param onLeftClick       handler for left clicks
-     * @param onRightClick      handler for right clicks
-     * @param onShiftLeftClick  handler for shift+left clicks
-     * @param onShiftRightClick handler for shift+right clicks
-     * @param onDoubleDrop      handler for double-drop actions
-     * @param sound             sound to play when clicked (may be null)
-     * @param width             width of the button in slots
-     * @param height            height of the button in rows
+     * @param builder the builder containing the double drop button configuration
      */
-    private DoubleDropButton(
-            String id,
-            Function<MenuContext, ItemStack> item,
-            Function<MenuContext, ItemStack> dropItem,
-            Consumer<KikoInventoryClickEvent> onClick,
-            Consumer<KikoInventoryClickEvent> onLeftClick, Consumer<KikoInventoryClickEvent> onRightClick,
-            Consumer<KikoInventoryClickEvent> onShiftLeftClick, Consumer<KikoInventoryClickEvent> onShiftRightClick,
-            Consumer<KikoInventoryClickEvent> onDoubleDrop,
-            Sound sound,
-            int width, int height
-    ) {
-        super(id);
-        this.item = item;
-        this.dropItem = dropItem;
+    private DoubleDropButton(Builder builder) {
+        super(builder.id());
+        this.item = builder.item;
+        this.dropItem = builder.dropItem;
 
-        this.onClick = onClick;
-        this.onLeftClick = onLeftClick;
-        this.onRightClick = onRightClick;
-        this.onShiftLeftClick = onShiftLeftClick;
-        this.onShiftRightClick = onShiftRightClick;
-        this.onDoubleDrop = onDoubleDrop;
+        this.onClick = builder.onClick;
+        this.onLeftClick = builder.onLeftClick;
+        this.onRightClick = builder.onRightClick;
+        this.onShiftLeftClick = builder.onShiftLeftClick;
+        this.onShiftRightClick = builder.onShiftRightClick;
+        this.onDoubleDrop = builder.onDoubleDrop;
 
-        this.sound = sound;
+        this.sound = builder.sound;
 
-        this.width = width;
-        this.height = height;
+        this.width = builder.width;
+        this.height = builder.height;
     }
 
     /**
@@ -674,20 +653,7 @@ public class DoubleDropButton extends MenuComponent {
          * @return a new DoubleDropButton with the specified configuration
          */
         public DoubleDropButton build() {
-            return new DoubleDropButton(
-                    this.id,
-                    this.item,
-                    this.dropItem,
-                    this.onClick,
-                    this.onLeftClick,
-                    this.onRightClick,
-                    this.onShiftLeftClick,
-                    this.onShiftRightClick,
-                    this.onDoubleDrop,
-                    this.sound,
-                    this.width,
-                    this.height
-            );
+            return new DoubleDropButton(this);
         }
     }
 }

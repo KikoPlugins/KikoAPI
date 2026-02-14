@@ -31,33 +31,23 @@ public class Grid extends MenuComponent {
 
     private final ObjectList<MenuComponent> slotComponents;
 
-    @Nullable
-    private final ItemStack border;
-    @Nullable
-    private final ItemStack fill;
+    @Nullable private final ItemStack border;
+    @Nullable private final ItemStack fill;
 
     /**
-     * Constructs a new Grid with the specified parameters.
+     * Constructs a new Grid with the specified configuration.
      *
-     * @param id             unique identifier for this grid
-     * @param width          width of the grid in slots
-     * @param height         height of the grid in rows
-     * @param slotComponents list of components contained within this grid
-     * @param border         ItemStack to use for border decoration (may be null)
-     * @param fill           ItemStack to use for empty space filling (may be null)
+     * @param builder the builder containing the builder configuration
      */
-    private Grid(
-            String id,
-            int width, int height,
-            ObjectList<MenuComponent> slotComponents,
-            ItemStack border, ItemStack fill
-    ) {
-        super(id);
-        this.width = width;
-        this.height = height;
-        this.slotComponents = slotComponents;
-        this.border = border;
-        this.fill = fill;
+    private Grid(Builder builder) {
+        super(builder.id());
+        this.slotComponents = new ObjectArrayList<>(builder.slotComponents);
+
+        this.border = builder.border;
+        this.fill = builder.fill;
+
+        this.width = builder.width;
+        this.height = builder.height;
     }
 
     /**
@@ -377,12 +367,7 @@ public class Grid extends MenuComponent {
          * @return a new Grid with the specified configuration
          */
         public Grid build() {
-            return new Grid(
-                    this.id,
-                    this.width, this.height,
-                    this.slotComponents,
-                    this.border, this.fill
-            );
+            return new Grid(this);
         }
     }
 }
