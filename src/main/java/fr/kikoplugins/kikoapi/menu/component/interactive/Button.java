@@ -40,14 +40,16 @@ import java.util.function.Function;
 public class Button extends MenuComponent {
     private final int width, height;
     private Function<MenuContext, ItemStack> item;
-    @Nullable
-    private Consumer<KikoInventoryClickEvent> onClick, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onDrop;
+    @Nullable private Consumer<KikoInventoryClickEvent> onClick, onDrop;
+    @Nullable private Consumer<KikoInventoryClickEvent> onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick;
     @Nullable private Sound sound;
+
     @Nullable private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
     private int animationInterval;
     private boolean stopAnimationOnHide;
     @Nullable private BukkitTask animationTask;
     private int currentFrame;
+
     @Nullable private Function<MenuContext, ItemStack> dynamicItem;
     private int updateInterval;
     private boolean stopUpdatesOnHide;
