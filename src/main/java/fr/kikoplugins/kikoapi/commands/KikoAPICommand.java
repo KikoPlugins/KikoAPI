@@ -25,6 +25,7 @@ public class KikoAPICommand {
                 .requires(css -> CommandUtils.defaultRequirements(css, "kikoapi.command.kikoapi"))
                 .then(reloadCommand())
                 .then(sendTestMessageCommand())
+                .then(KikoAPITestCommand.get())
                 .build();
     }
 
