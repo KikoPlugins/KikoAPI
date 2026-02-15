@@ -46,7 +46,6 @@ public class Button extends MenuComponent {
     @Nullable private BukkitTask animationTask;
     private int currentFrame;
 
-    @Nullable private Function<MenuContext, ItemStack> dynamicItem;
     private int updateInterval;
     private boolean stopUpdatesOnHide;
     @Nullable private BukkitTask updateTask;
@@ -73,7 +72,6 @@ public class Button extends MenuComponent {
         this.animationInterval = builder.animationInterval;
         this.stopAnimationOnHide = builder.stopAnimationOnHide;
 
-        this.dynamicItem = builder.dynamicItem;
         this.updateInterval = builder.updateInterval;
         this.stopUpdatesOnHide = builder.stopUpdatesOnHide;
     }
@@ -97,11 +95,11 @@ public class Button extends MenuComponent {
      */
     @Override
     public void onAdd(MenuContext context) {
+        if (this.updateInterval > 0)
+            this.startUpdates(context);
+
         if (this.animationFrames != null && this.animationInterval > 0)
             this.startAnimation(context);
-
-        if (this.dynamicItem != null && this.updateInterval > 0)
-            this.startUpdates(context);
     }
 
     /**
@@ -241,9 +239,6 @@ public class Button extends MenuComponent {
      * @return the appropriate ItemStack for the current state
      */
     private ItemStack getCurrentItem(MenuContext context) {
-        if (this.dynamicItem != null)
-            return this.dynamicItem.apply(context);
-
         if (this.animationFrames != null) {
             ObjectList<ItemStack> frames = this.animationFrames.apply(context);
             if (frames.isEmpty())
@@ -430,21 +425,6 @@ public class Button extends MenuComponent {
     }
 
     /**
-     * Sets the function providing dynamic content for this button.
-     *
-     * @param dynamicItem function that returns dynamically updating ItemStack
-     * @return this button for method chaining
-     * @throws NullPointerException if dynamicItem is null
-     */
-    @Contract(value = "_ -> this", mutates = "this")
-    public Button dynamicItem(Function<MenuContext, ItemStack> dynamicItem) {
-        Preconditions.checkNotNull(dynamicItem, "dynamicItem cannot be null");
-
-        this.dynamicItem = dynamicItem;
-        return this;
-    }
-
-    /**
      * Sets the interval between dynamic content updates in ticks.
      *
      * @param updateInterval ticks between updates (must be positive)
@@ -490,12 +470,10 @@ public class Button extends MenuComponent {
 
         @Nullable
         private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
-        private int animationInterval = 20;
+        private int animationInterval = -1;
         private boolean stopAnimationOnHide = true;
 
-        @Nullable
-        private Function<MenuContext, ItemStack> dynamicItem;
-        private int updateInterval = 20;
+        private int updateInterval = -1;
         private boolean stopUpdatesOnHide = false;
 
         /**
@@ -669,21 +647,6 @@ public class Button extends MenuComponent {
         @Contract(value = "_ -> this", mutates = "this")
         public Builder stopAnimationOnHide(boolean stopAnimationOnHide) {
             this.stopAnimationOnHide = stopAnimationOnHide;
-            return this;
-        }
-
-        /**
-         * Sets the function providing dynamic content for this button.
-         *
-         * @param dynamicItem function that returns dynamically updating ItemStack
-         * @return this builder for method chaining
-         * @throws NullPointerException if dynamicItem is null
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder dynamicItem(Function<MenuContext, ItemStack> dynamicItem) {
-            Preconditions.checkNotNull(dynamicItem, "dynamicItem cannot be null");
-
-            this.dynamicItem = dynamicItem;
             return this;
         }
 

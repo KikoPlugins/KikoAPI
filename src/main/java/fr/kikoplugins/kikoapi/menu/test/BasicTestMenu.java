@@ -88,7 +88,7 @@ public class BasicTestMenu extends Menu {
      */
     private static Button dynamicButton() {
         return Button.create()
-                .dynamicItem(context -> {
+                .item(context -> {
                     int seconds = (int) (System.currentTimeMillis() / 1000 % 60);
                     return ItemBuilder.of(Material.OAK_SIGN).name(
                             Component.text("Seconds: " + seconds)
@@ -108,8 +108,8 @@ public class BasicTestMenu extends Menu {
      */
     private static Button coordinatesDynamicButton() {
         return Button.create()
-                .dynamicItem(context -> {
-                    Player player = context.getMenu().getPlayer();
+                .item(context -> {
+                    Player player = context.getPlayer();
                     double x = player.getLocation().getX();
                     double y = player.getLocation().getY();
                     double z = player.getLocation().getZ();
