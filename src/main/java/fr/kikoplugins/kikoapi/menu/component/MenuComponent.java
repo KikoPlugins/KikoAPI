@@ -330,7 +330,8 @@ public abstract class MenuComponent {
     @SuppressWarnings("unchecked")
     protected static class Builder<T> {
         @Nullable protected String id;
-        protected int width, height;
+        protected int width = 1;
+        protected int height = 1;
 
         /**
          * Sets the ID for this component.
