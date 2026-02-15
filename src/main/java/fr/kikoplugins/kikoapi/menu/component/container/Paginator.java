@@ -127,6 +127,12 @@ public class Paginator extends MenuComponent {
         }
     }
 
+    @Override
+    public void setPosition(@NonNegative int x, @NonNegative int y) {
+        super.setPosition(x, y);
+        this.updateLayoutSlots();
+    }
+
     /**
      * Handles click events within the paginator.
      * <p>
