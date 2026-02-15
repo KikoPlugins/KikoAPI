@@ -224,6 +224,9 @@ public class Selector<T> extends MenuComponent {
             }
         }
 
+        if (removedIndex != -1 && this.options.size() == 1)
+            throw new IllegalStateException("Cannot remove the last option from the selector");
+
         this.options.removeIf(option -> Objects.equals(option.value, value));
 
         if (removedIndex >= 0 && removedIndex < this.currentIndex)

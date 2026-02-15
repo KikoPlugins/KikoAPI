@@ -112,7 +112,9 @@ public abstract class Menu implements InventoryHolder {
         if (!event)
             this.player.closeInventory();
 
-        this.context.close();
+        if (this.context.getMenu() == this)
+            this.context.close();
+
         this.onClose();
     }
 

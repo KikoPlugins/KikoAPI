@@ -223,9 +223,13 @@ public class Paginator extends MenuComponent {
 
         int maxItemsPerPage = this.width * this.height;
         int totalItems = this.components.size();
+
         int maxPage = Math.max(0, (int) Math.ceil((double) totalItems / maxItemsPerPage) - 1);
         int safePage = Math.min(this.page, maxPage);
-        int startIndex = Math.min(safePage * maxItemsPerPage, totalItems);
+        if (this.page != safePage)
+            this.page = safePage;
+
+        int startIndex = Math.min(this.page * maxItemsPerPage, totalItems);
         int endIndex = Math.min(startIndex + maxItemsPerPage, totalItems);
 
         this.cachedPageComponents = new ObjectArrayList<>(this.components.subList(startIndex, endIndex));
@@ -381,10 +385,12 @@ public class Paginator extends MenuComponent {
         Preconditions.checkNotNull(component, "component cannot be null");
 
         this.components.add(component);
+        component.onAdd(context);
         String addedID = component.getID();
         if (addedID != null)
             context.getMenu().registerComponentID(addedID, component);
 
+        this.invalidateCache();
         return this;
     }
 
@@ -433,13 +439,9 @@ public class Paginator extends MenuComponent {
             if (!component.getSlots(context).contains(slot))
                 continue;
 
-            this.components.remove(component);
-            String removedID = component.getID();
-            if (removedID != null)
-                context.getMenu().unregisterComponentID(removedID);
-
-            return this;
+            return this.remove(context, component);
         }
+
         return this;
     }
 
@@ -456,10 +458,12 @@ public class Paginator extends MenuComponent {
         Preconditions.checkNotNull(context, "context cannot be null");
         Preconditions.checkNotNull(component, "component cannot be null");
 
+        component.onRemove(context);
         this.components.remove(component);
         String removedID = component.getID();
         if (removedID != null)
             context.getMenu().unregisterComponentID(removedID);
+        this.invalidateCache();
         return this;
     }
 
@@ -478,7 +482,7 @@ public class Paginator extends MenuComponent {
 
         int[] sorted = indexes.toIntArray();
         Arrays.sort(sorted);
-        for (int i = sorted.length - 1; i >= 0; i--) {
+        for (int i = 0; i < sorted.length - 1; i++) {
             int index = sorted[i];
             if (index >= this.components.size())
                 continue; // The next indexes will always be bigger
