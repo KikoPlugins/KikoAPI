@@ -213,7 +213,6 @@ public class Selector<T> extends MenuComponent {
      *
      * @param value the value of the option to remove
      * @return this selector for method chaining
-     * @throws NullPointerException if value is null
      */
     @Contract(value = "_ -> this", mutates = "this")
     public Selector<T> removeOption(@Nullable T value) {

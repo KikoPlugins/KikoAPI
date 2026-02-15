@@ -91,7 +91,7 @@ public class MenuContext {
      * @param menu the new menu to set
      * @throws NullPointerException if menu is null
      */
-    void getMenu(Menu menu) {
+    void setMenu(Menu menu) {
         Preconditions.checkNotNull(menu, "menu cannot be null");
         if (this.firstMenuSet) {
             this.firstMenuSet = false;

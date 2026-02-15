@@ -223,7 +223,9 @@ public class Paginator extends MenuComponent {
 
         int maxItemsPerPage = this.width * this.height;
         int totalItems = this.components.size();
-        int startIndex = this.page * maxItemsPerPage;
+        int maxPage = Math.max(0, (int) Math.ceil((double) totalItems / maxItemsPerPage) - 1);
+        int safePage = Math.min(this.page, maxPage);
+        int startIndex = Math.min(safePage * maxItemsPerPage, totalItems);
         int endIndex = Math.min(startIndex + maxItemsPerPage, totalItems);
 
         this.cachedPageComponents = new ObjectArrayList<>(this.components.subList(startIndex, endIndex));
