@@ -89,7 +89,7 @@ public class KikoAPITestCommand {
 
     private static LiteralArgumentBuilder<CommandSourceStack> previousCommand() {
         return Commands.literal("previous")
-                .requires(css -> CommandUtils.defaultRequirements(css, "kikoapi.command.kikoapi.test.previous"))
+                .requires(css -> CommandUtils.defaultRequirements(css, "kikoapi.command.kikoapi.test.previous", true))
                 .executes(ctx -> {
                     Player player = (Player) ctx.getSource().getExecutor();
                     new PreviousTestMenu(player).open();

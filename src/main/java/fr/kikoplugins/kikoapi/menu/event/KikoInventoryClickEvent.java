@@ -12,7 +12,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 
 /**
- * A specialized inventory click event for Niveria menu interactions.
+ * A specialized inventory click event for Kiko menu interactions.
  * <p>
  * This class extends InventoryClickEvent to provide additional functionality
  * specific to menu components, including context access and convenient
@@ -31,7 +31,7 @@ public class KikoInventoryClickEvent extends InventoryClickEvent {
      */
     @SuppressWarnings("UnstableApiUsage")
     public KikoInventoryClickEvent(InventoryClickEvent event, MenuContext context) {
-        super(event.getView(), event.getSlotType(), event.getSlot(), event.getClick(), event.getAction());
+        super(event.getView(), event.getSlotType(), event.getSlot(), event.getClick(), event.getAction(), event.getHotbarButton());
 
         Preconditions.checkNotNull(context, "context cannot be null");
 

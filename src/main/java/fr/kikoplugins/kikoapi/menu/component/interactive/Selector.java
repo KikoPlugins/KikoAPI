@@ -115,7 +115,7 @@ public class Selector<T> extends MenuComponent {
         this.currentIndex = Math.floorMod(this.currentIndex + operation, this.options.size());
         Option<T> newOption = this.getCurrentOption();
 
-        if (this.onSelectionChange == null)
+        if (this.onSelectionChange == null || oldIndex == this.currentIndex)
             return;
 
         SelectionChangeEvent<T> selectionChangeEvent = new SelectionChangeEvent<>(
@@ -216,9 +216,7 @@ public class Selector<T> extends MenuComponent {
      * @throws NullPointerException if value is null
      */
     @Contract(value = "_ -> this", mutates = "this")
-    public Selector<T> removeOption(T value) {
-        Preconditions.checkNotNull(value, "value cannot be null");
-
+    public Selector<T> removeOption(@Nullable T value) {
         int removedIndex = -1;
         for (int i = 0; i < this.options.size(); i++) {
             if (Objects.equals(this.options.get(i).value, value)) {
@@ -423,7 +421,12 @@ public class Selector<T> extends MenuComponent {
          */
         public Selector<T> build() {
             Preconditions.checkArgument(
-                    this.options.isEmpty() || this.defaultIndex < this.options.size(),
+                    !this.options.isEmpty(),
+                    "Selector must have at least one option"
+            );
+
+            Preconditions.checkArgument(
+                    this.defaultIndex < this.options.size(),
                     "defaultIndex (%s) must be less than options size (%s)",
                     this.defaultIndex, this.options.size()
             );

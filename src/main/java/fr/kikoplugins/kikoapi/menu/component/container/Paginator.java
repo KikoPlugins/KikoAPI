@@ -306,7 +306,7 @@ public class Paginator extends MenuComponent {
     public Button getFirstPageButton() {
         return Button.create()
                 .item(context -> {
-                    if (this.page > 0)
+                    if (this.page > 0 && this.firstPageItem != null)
                         return this.firstPageItem.apply(context);
 
                     if (this.offFirstPageItem != null)
@@ -335,7 +335,7 @@ public class Paginator extends MenuComponent {
     public Button getLastPageButton() {
         return Button.create()
                 .item(context -> {
-                    if (this.page < this.getMaxPage())
+                    if (this.page < this.getMaxPage() && this.lastPageItem != null)
                         return this.lastPageItem.apply(context);
 
                     if (this.offLastPageItem != null)
@@ -479,7 +479,7 @@ public class Paginator extends MenuComponent {
         for (int i = sorted.length - 1; i >= 0; i--) {
             int index = sorted[i];
             if (index >= this.components.size())
-                break; // The next indexes will always be bigger
+                continue; // The next indexes will always be bigger
 
             MenuComponent component = this.components.get(index);
             this.remove(context, component);
@@ -791,14 +791,12 @@ public class Paginator extends MenuComponent {
         /**
          * Adds a component to the paginator.
          *
-         * @param context   menu context
          * @param component the component to add
          * @return this builder for method chaining
          * @throws NullPointerException if component is null
          */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder add(MenuContext context, MenuComponent component) {
-            Preconditions.checkNotNull(context, "context cannot be null");
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder add(MenuComponent component) {
             Preconditions.checkNotNull(component, "component cannot be null");
 
             this.components.add(component);
@@ -808,18 +806,16 @@ public class Paginator extends MenuComponent {
         /**
          * Adds multiple components to the paginator.
          *
-         * @param context    menu context
          * @param components the list of components to add
          * @return this builder for method chaining
          * @throws NullPointerException if components is null
          */
-        @Contract(value = "_, _ -> this", mutates = "this")
-        public Builder addAll(MenuContext context, ObjectList<MenuComponent> components) {
-            Preconditions.checkNotNull(context, "context cannot be null");
+        @Contract(value = "_ -> this", mutates = "this")
+        public Builder addAll(ObjectList<MenuComponent> components) {
             Preconditions.checkNotNull(components, "components cannot be null");
 
             for (MenuComponent component : components)
-                this.add(context, component);
+                this.add(component);
             return this;
         }
 

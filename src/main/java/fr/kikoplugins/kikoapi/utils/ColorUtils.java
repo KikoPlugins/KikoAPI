@@ -6,6 +6,8 @@ import org.jspecify.annotations.NullMarked;
 /**
  * Utility class for managing text colors.
  */
+// Hex values are hardcoded
+@SuppressWarnings("DataFlowIssue")
 @NullMarked
 public class ColorUtils {
     private ColorUtils() {
@@ -13,7 +15,7 @@ public class ColorUtils {
     }
 
     /**
-     * Gets the primary color used in the Niveria API.
+     * Gets the primary color used in the KikoAPI.
      *
      * @return The primary TextColor.
      */
@@ -22,7 +24,7 @@ public class ColorUtils {
     }
 
     /**
-     * Gets the secondary color used in the Niveria API.
+     * Gets the secondary color used in the KikoAPI.
      *
      * @return The secondary TextColor.
      */

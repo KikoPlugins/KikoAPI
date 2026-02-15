@@ -36,6 +36,8 @@ public class MenuContext {
      * @throws NullPointerException if menu is null
      */
     public MenuContext(Menu menu) {
+        Preconditions.checkNotNull(menu, "menu cannot be null");
+
         this.previousMenus = new ArrayDeque<>();
         this.data = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 
@@ -167,10 +169,14 @@ public class MenuContext {
     }
 
     /**
-     * Removes all key-value pairs from the context's data map.
+     * Clears all data from the context, including the previous menus stack and the data map.
+     * <p>
+     * This method can be used to reset the context to its initial state, removing all stored
+     * information and navigation history.
      */
     public void clear() {
         this.data.clear();
+        this.previousMenus.clear();
     }
 
     /**

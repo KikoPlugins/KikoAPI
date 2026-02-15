@@ -105,9 +105,12 @@ public abstract class Menu implements InventoryHolder {
      *              If false, the player's inventory will be closed programmatically.
      */
     public void close(boolean event) {
-        this.root.onRemove(this.context);
+        // If root is null, it means the menu was never opened or was already closed, so we can skip onRemove
+        if (this.root != null)
+            this.root.onRemove(this.context);
 
-        if (!event) this.player.closeInventory();
+        if (!event)
+            this.player.closeInventory();
 
         this.context.close();
         this.onClose();
