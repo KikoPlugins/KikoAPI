@@ -113,7 +113,10 @@ onMounted(() => {
     } else if (props.placeholder) {
         imgSrc.value = props.placeholder;
         isLoading.value = false;
+    } else {
+        isLoading.value = false;
     }
+});
 });
 
 watch(() => props.src, (newSrc) => {
