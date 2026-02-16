@@ -224,7 +224,7 @@ public class Paginator extends MenuComponent {
         int maxItemsPerPage = this.width * this.height;
         int totalItems = this.components.size();
 
-        int maxPage = Math.max(0, (int) Math.ceil((double) totalItems / maxItemsPerPage) - 1);
+        int maxPage = Math.max(1, (int) Math.ceil((double) totalItems / maxItemsPerPage) - 1);
         int safePage = Math.min(this.page, maxPage);
         if (this.page != safePage)
             this.page = safePage;

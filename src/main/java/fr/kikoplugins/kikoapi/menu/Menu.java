@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jspecify.annotations.NullMarked;
@@ -99,23 +100,31 @@ public abstract class Menu implements InventoryHolder {
     }
 
     /**
-     * Closes the menu and performs cleanup.
-     *
-     * @param event whether this close was triggered by an inventory close event.
-     *              If false, the player's inventory will be closed programmatically.
+     * Closes the menu for the player.
+     * <p>
+     * This method performs cleanup and closes the player's inventory.
      */
-    public void close(boolean event) {
+    public void close() {
+        this.close(InventoryCloseEvent.Reason.PLUGIN);
+    }
+
+    /**
+     * Closes the menu for the player with a specified reason.
+     *
+     * @param reason the reason for closing the inventory
+     */
+    public void close(InventoryCloseEvent.Reason reason) {
         // If root is null, it means the menu was never opened or was already closed, so we can skip onRemove
         if (this.root != null)
             this.root.onRemove(this.context);
 
-        if (!event)
+        if (reason == InventoryCloseEvent.Reason.PLUGIN)
             this.player.closeInventory();
 
         if (this.context.getMenu() == this)
             this.context.close();
 
-        this.onClose();
+        this.onClose(reason);
     }
 
     /**
@@ -213,9 +222,11 @@ public abstract class Menu implements InventoryHolder {
      * Called when the menu is closed.
      * <p>
      * Subclasses can override this method to perform actions when the menu
-     * is closed.
+     * is closed, such as cleanup or saving state.
+     *
+     * @param reason the reason for closing the inventory
      */
-    protected void onClose() {
+    protected void onClose(InventoryCloseEvent.Reason reason) {
 
     }
 

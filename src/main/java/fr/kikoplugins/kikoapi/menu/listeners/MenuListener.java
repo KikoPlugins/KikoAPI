@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -58,5 +59,19 @@ public class MenuListener implements Listener {
             return;
 
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        InventoryCloseEvent.Reason reason = event.getReason();
+        if (reason == InventoryCloseEvent.Reason.PLUGIN)
+            return;
+
+        Inventory inventory = event.getInventory();
+        InventoryHolder holder = inventory.getHolder(false);
+        if (!(holder instanceof Menu menu))
+            return;
+
+        menu.close(reason);
     }
 }
