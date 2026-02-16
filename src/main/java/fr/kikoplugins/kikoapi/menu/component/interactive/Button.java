@@ -63,7 +63,7 @@ public class Button extends MenuComponent {
         super(builder);
         this.item = builder.item;
 
-        this.onClickMap = builder.onClickMap;
+        this.onClickMap = new Object2ObjectOpenHashMap<>(builder.onClickMap);
 
         this.sound = builder.sound;
 

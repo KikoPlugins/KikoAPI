@@ -7,6 +7,8 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
@@ -17,6 +19,8 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -33,12 +37,13 @@ import java.util.function.Function;
 public class DoubleDropButton extends MenuComponent {
     private Function<MenuContext, ItemStack> item;
     private Function<MenuContext, ItemStack> dropItem;
-    @Nullable
-    private Consumer<KikoInventoryClickEvent> onClick, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onDoubleDrop;
-    @Nullable
-    private Sound sound;
-    @Nullable
-    private BukkitTask dropTask;
+
+    private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap;
+    @Nullable private Consumer<KikoInventoryClickEvent> onDoubleDrop;
+
+    @Nullable private Sound sound;
+
+    @Nullable private BukkitTask dropTask;
 
     /**
      * Constructs a new DoubleDropButton with the specified configuration.
@@ -50,11 +55,7 @@ public class DoubleDropButton extends MenuComponent {
         this.item = builder.item;
         this.dropItem = builder.dropItem;
 
-        this.onClick = builder.onClick;
-        this.onLeftClick = builder.onLeftClick;
-        this.onRightClick = builder.onRightClick;
-        this.onShiftLeftClick = builder.onShiftLeftClick;
-        this.onShiftRightClick = builder.onShiftRightClick;
+        this.onClickMap = new Object2ObjectOpenHashMap<>(builder.onClickMap);
         this.onDoubleDrop = builder.onDoubleDrop;
 
         this.sound = builder.sound;
@@ -63,7 +64,7 @@ public class DoubleDropButton extends MenuComponent {
     /**
      * Creates a new DoubleDropButton builder instance.
      *
-     * @return a new DoubleDropButton.Builder for constructing buttons
+     * @return a new DoubleDropBuilder for constructing buttons
      */
     @Contract(value = "-> new", pure = true)
     public static Builder create() {
@@ -71,7 +72,7 @@ public class DoubleDropButton extends MenuComponent {
     }
 
     /**
-     * Called when this button is removed from a menu.
+     * Called when this double drop button is removed from a menu.
      * <p>
      * Cancels any pending drop task to prevent memory leaks and
      * ensure proper cleanup.
@@ -85,12 +86,12 @@ public class DoubleDropButton extends MenuComponent {
     }
 
     /**
-     * Handles click events on this button.
+     * Handles click events on this double drop button.
      * <p>
-     * The button supports several interaction modes:
-     * - Drop clicks: First drop enters "drop state", second drop within 3 seconds triggers double-drop
-     * - Specific click handlers: Left, right, shift+left, shift+right clicks
-     * - General click handler: Fallback for other mouse clicks
+     * The double drop button supports several interaction modes with priority handling:
+     * 1. Drop clicks: First drop enters "drop state", second drop within 3 seconds triggers double-drop
+     * 2. Specific click handlers (left, right, shift variants, drop)
+     * 3. General click handler for other mouse clicks
      *
      * @param event   the inventory click event
      * @param context the menu context
@@ -106,28 +107,28 @@ public class DoubleDropButton extends MenuComponent {
             return;
         }
 
-        Consumer<KikoInventoryClickEvent> handler = switch (event.getClick()) {
-            case LEFT, DOUBLE_CLICK -> this.onLeftClick;
-            case RIGHT -> this.onRightClick;
-            case SHIFT_LEFT -> this.onShiftLeftClick;
-            case SHIFT_RIGHT -> this.onShiftRightClick;
-            default -> null;
-        };
+        Consumer<KikoInventoryClickEvent> handler = null;
+        for (Map.Entry<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> entry : this.onClickMap.entrySet()) {
+            EnumSet<ClickType> clickTypes = entry.getKey();
+            if (!clickTypes.contains(event.getClick()))
+                continue;
 
-        if (handler != null) {
-            handler.accept(event);
+            handler = entry.getValue();
 
-            if (this.sound != null)
-                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
+            // Check for a onClick method usage
+            // We want to prioritize other more specific method used
+            // So we wait for another one to maybe overwrite the onClick
+            if (clickTypes.size() != ClickType.values().length)
+                break;
+        }
+
+        if (handler == null)
             return;
-        }
 
-        if (this.onClick != null && click.isMouseClick()) {
-            this.onClick.accept(event);
+        handler.accept(event);
 
-            if (this.sound != null)
-                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
-        }
+        if (this.sound != null)
+            context.getPlayer().playSound(this.sound, Sound.Emitter.self());
     }
 
     /**
@@ -158,9 +159,9 @@ public class DoubleDropButton extends MenuComponent {
     }
 
     /**
-     * Returns the items to be displayed by this button.
+     * Returns the items to be displayed by this double drop button.
      * <p>
-     * The button fills all slots within its widthxheight area with the
+     * The double drop button fills all slots within its widthxheight area with the
      * current item (normal or drop state). Returns an empty map if not visible.
      *
      * @param context the menu context
@@ -242,7 +243,7 @@ public class DoubleDropButton extends MenuComponent {
     public DoubleDropButton onClick(Consumer<KikoInventoryClickEvent> onClick) {
         Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-        this.onClick = onClick;
+        this.onClickMap.put(EnumSet.allOf(ClickType.class), onClick);
         return this;
     }
 
@@ -257,7 +258,7 @@ public class DoubleDropButton extends MenuComponent {
     public DoubleDropButton onLeftClick(Consumer<KikoInventoryClickEvent> onLeftClick) {
         Preconditions.checkNotNull(onLeftClick, "onLeftClick cannot be null");
 
-        this.onLeftClick = onLeftClick;
+        this.onClickMap.put(EnumSet.of(ClickType.LEFT), onLeftClick);
         return this;
     }
 
@@ -272,37 +273,7 @@ public class DoubleDropButton extends MenuComponent {
     public DoubleDropButton onRightClick(Consumer<KikoInventoryClickEvent> onRightClick) {
         Preconditions.checkNotNull(onRightClick, "onRightClick cannot be null");
 
-        this.onRightClick = onRightClick;
-        return this;
-    }
-
-    /**
-     * Sets the shift+left click handler.
-     *
-     * @param onShiftLeftClick the shift+left click handler
-     * @return this double drop button for method chaining
-     * @throws NullPointerException if onShiftLeftClick is null
-     */
-    @Contract(value = "_ -> this", mutates = "this")
-    public DoubleDropButton onShiftLeftClick(Consumer<KikoInventoryClickEvent> onShiftLeftClick) {
-        Preconditions.checkNotNull(onShiftLeftClick, "onShiftLeftClick cannot be null");
-
-        this.onShiftLeftClick = onShiftLeftClick;
-        return this;
-    }
-
-    /**
-     * Sets the shift+right click handler.
-     *
-     * @param onShiftRightClick the shift+right click handler
-     * @return this double drop button for method chaining
-     * @throws NullPointerException if onShiftRightClick is null
-     */
-    @Contract(value = "_ -> this", mutates = "this")
-    public DoubleDropButton onShiftRightClick(Consumer<KikoInventoryClickEvent> onShiftRightClick) {
-        Preconditions.checkNotNull(onShiftRightClick, "onShiftRightClick cannot be null");
-
-        this.onShiftRightClick = onShiftRightClick;
+        this.onClickMap.put(EnumSet.of(ClickType.RIGHT), onRightClick);
         return this;
     }
 
@@ -350,8 +321,8 @@ public class DoubleDropButton extends MenuComponent {
         private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
         private Function<MenuContext, ItemStack> dropItem = context -> ItemStack.of(Material.DIRT);
 
-        @Nullable
-        private Consumer<KikoInventoryClickEvent> onClick, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onDoubleDrop;
+        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectOpenHashMap<>();
+        @Nullable private Consumer<KikoInventoryClickEvent> onDoubleDrop;
 
         @Nullable
         private Sound sound = Sound.sound(
@@ -432,7 +403,7 @@ public class DoubleDropButton extends MenuComponent {
         public Builder onClick(Consumer<KikoInventoryClickEvent> onClick) {
             Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-            this.onClick = onClick;
+            this.onClickMap.put(EnumSet.allOf(ClickType.class), onClick);
             return this;
         }
 
@@ -447,7 +418,7 @@ public class DoubleDropButton extends MenuComponent {
         public Builder onLeftClick(Consumer<KikoInventoryClickEvent> onLeftClick) {
             Preconditions.checkNotNull(onLeftClick, "onLeftClick cannot be null");
 
-            this.onLeftClick = onLeftClick;
+            this.onClickMap.put(EnumSet.of(ClickType.LEFT), onLeftClick);
             return this;
         }
 
@@ -462,37 +433,41 @@ public class DoubleDropButton extends MenuComponent {
         public Builder onRightClick(Consumer<KikoInventoryClickEvent> onRightClick) {
             Preconditions.checkNotNull(onRightClick, "onRightClick cannot be null");
 
-            this.onRightClick = onRightClick;
+            this.onClickMap.put(EnumSet.of(ClickType.RIGHT), onRightClick);
             return this;
         }
 
         /**
-         * Sets the shift+left click handler.
+         * Sets a click handler for specific click types.
          *
-         * @param onShiftLeftClick the shift+left click handler
+         * @param clickType the click type to handle
+         * @param onClick   the click handler
          * @return this builder for method chaining
-         * @throws NullPointerException if onShiftLeftClick is null
+         * @throws NullPointerException if clickType or onClick is null
          */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder onShiftLeftClick(Consumer<KikoInventoryClickEvent> onShiftLeftClick) {
-            Preconditions.checkNotNull(onShiftLeftClick, "onShiftLeftClick cannot be null");
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public Builder onClick(ClickType clickType, Consumer<KikoInventoryClickEvent> onClick) {
+            Preconditions.checkNotNull(clickType, "clickType cannot be null");
+            Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-            this.onShiftLeftClick = onShiftLeftClick;
+            this.onClickMap.put(EnumSet.of(clickType), onClick);
             return this;
         }
 
         /**
-         * Sets the shift+right click handler.
+         * Sets a click handler for multiple click types.
          *
-         * @param onShiftRightClick the shift+right click handler
+         * @param clickTypes the click types to handle
+         * @param onClick    the click handler
          * @return this builder for method chaining
-         * @throws NullPointerException if onShiftRightClick is null
+         * @throws NullPointerException if clickTypes or onClick is null
          */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder onShiftRightClick(Consumer<KikoInventoryClickEvent> onShiftRightClick) {
-            Preconditions.checkNotNull(onShiftRightClick, "onShiftRightClick cannot be null");
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public Builder onClick(EnumSet<ClickType> clickTypes, Consumer<KikoInventoryClickEvent> onClick) {
+            Preconditions.checkNotNull(clickTypes, "clickTypes cannot be null");
+            Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-            this.onShiftRightClick = onShiftRightClick;
+            this.onClickMap.put(clickTypes, onClick);
             return this;
         }
 
@@ -512,7 +487,7 @@ public class DoubleDropButton extends MenuComponent {
         }
 
         /**
-         * Sets the sound to play when the button is clicked.
+         * Sets the sound to play when the double drop button is clicked.
          *
          * @param sound the sound to play, or null for no sound
          * @return this builder for method chaining
