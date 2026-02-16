@@ -53,7 +53,6 @@ public class ConfirmationMenu extends Menu {
     ) {
         super(player);
 
-        Preconditions.checkNotNull(player, "player cannot be null");
         Preconditions.checkNotNull(title, "title cannot be null");
         Preconditions.checkNotNull(yesItem, "yesMaterial cannot be null");
         Preconditions.checkNotNull(noItem, "noMaterial cannot be null");

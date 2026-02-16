@@ -179,6 +179,11 @@ public class Button extends MenuComponent {
                 return;
             }
 
+            if (this.animationFrames == null) {
+                stopAnimation();
+                return;
+            }
+
             List<ItemStack> frames = this.animationFrames.apply(context);
             if (frames.isEmpty())
                 return;

@@ -766,7 +766,11 @@ public class ItemBuilder {
     public ItemBuilder removeLoreLine(Component line) {
         Preconditions.checkNotNull(line, "line cannot be null");
 
-        List<Component> lore = new ArrayList<>(itemStack.getData(DataComponentTypes.LORE).lines());
+        ItemLore data = itemStack.getData(DataComponentTypes.LORE);
+        if (data == null)
+            return this;
+
+        List<Component> lore = new ArrayList<>(data.lines());
         lore.remove(line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
 
         itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(lore));
@@ -1011,7 +1015,8 @@ public class ItemBuilder {
                 : data.modifiers().stream()
                 .collect(Collectors.toMap(
                         ItemAttributeModifiers.Entry::attribute,
-                        ItemAttributeModifiers.Entry::modifier
+                        ItemAttributeModifiers.Entry::modifier,
+                        (existing, replacement) -> replacement
                 ));
     }
 

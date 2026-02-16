@@ -55,7 +55,7 @@ public class Grid extends MenuComponent {
     /**
      * Called when this grid is added to a menu.
      * <p>
-     * Propagates the onAdd event to all child components if the grid is visible.
+     * Propagates the onAdd event to all child components.
      *
      * @param context the menu context
      */

@@ -482,8 +482,7 @@ public class Paginator extends MenuComponent {
 
         int[] sorted = indexes.toIntArray();
         Arrays.sort(sorted);
-        for (int i = 0; i < sorted.length - 1; i++) {
-            int index = sorted[i];
+        for (int index : sorted) {
             if (index >= this.components.size())
                 continue; // The next indexes will always be bigger
 

@@ -78,7 +78,6 @@ public class Toggle extends MenuComponent {
             context.getPlayer().playSound(this.sound, Sound.Emitter.self());
 
         this.currentState = !this.currentState;
-        this.render(context);
 
         if (this.onToggle != null) {
             ToggleEvent toggleEvent = new ToggleEvent(event, this.currentState);
@@ -215,8 +214,8 @@ public class Toggle extends MenuComponent {
      * Builder class for constructing Toggle instances with a fluent interface.
      */
     public static class Builder extends MenuComponent.Builder<Builder> {
-        private Function<MenuContext, ItemStack> onItem = context -> ItemStack.of(Material.STONE);
-        private Function<MenuContext, ItemStack> offItem = context -> ItemStack.of(Material.STONE);
+        private Function<MenuContext, ItemStack> onItem = context -> ItemStack.of(Material.LIME_DYE);
+        private Function<MenuContext, ItemStack> offItem = context -> ItemStack.of(Material.RED_DYE);
 
         @Nullable
         private Consumer<ToggleEvent> onToggle;
