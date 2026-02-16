@@ -136,7 +136,7 @@ lerna-debug.log*
 *.sqlite
 
 # package-json
-package-json.lock
+bun.lock
 
 # bun deploy file
 node_modules.bun
