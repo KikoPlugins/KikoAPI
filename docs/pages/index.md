@@ -7,7 +7,6 @@ outline: false
 ---
 
 <script setup>
-import CachedImage from '../.vitepress/theme/components/CachedImage.vue';
 import KikoHero from '../.vitepress/theme/components/KikoHero.vue';
 import KikoFeature from '../.vitepress/theme/components/KikoFeature.vue';
 
