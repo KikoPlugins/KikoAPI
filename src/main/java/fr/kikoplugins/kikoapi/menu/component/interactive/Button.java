@@ -7,10 +7,13 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.checkerframework.checker.index.qual.Positive;
@@ -18,7 +21,9 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,8 +41,7 @@ import java.util.function.Function;
 @NullMarked
 public class Button extends MenuComponent {
     private Function<MenuContext, ItemStack> item;
-    @Nullable private Consumer<KikoInventoryClickEvent> onClick, onDrop;
-    @Nullable private Consumer<KikoInventoryClickEvent> onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick;
+    private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap;
     @Nullable private Sound sound;
 
     @Nullable private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
@@ -59,12 +63,7 @@ public class Button extends MenuComponent {
         super(builder);
         this.item = builder.item;
 
-        this.onClick = builder.onClick;
-        this.onLeftClick = builder.onLeftClick;
-        this.onRightClick = builder.onRightClick;
-        this.onShiftLeftClick = builder.onShiftLeftClick;
-        this.onShiftRightClick = builder.onShiftRightClick;
-        this.onDrop = builder.onDrop;
+        this.onClickMap = builder.onClickMap;
 
         this.sound = builder.sound;
 
@@ -130,29 +129,28 @@ public class Button extends MenuComponent {
         if (!this.isInteractable())
             return;
 
-        Consumer<KikoInventoryClickEvent> handler = switch (event.getClick()) {
-            case LEFT, DOUBLE_CLICK -> this.onLeftClick;
-            case RIGHT -> this.onRightClick;
-            case SHIFT_LEFT -> this.onShiftLeftClick;
-            case SHIFT_RIGHT -> this.onShiftRightClick;
-            case DROP, CONTROL_DROP -> this.onDrop;
-            default -> null;
-        };
+        Consumer<KikoInventoryClickEvent> handler = null;
+        for (Map.Entry<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> entry : this.onClickMap.entrySet()) {
+            EnumSet<ClickType> clickTypes = entry.getKey();
+            if (!clickTypes.contains(event.getClick()))
+                continue;
 
-        if (handler != null) {
-            handler.accept(event);
+            handler = entry.getValue();
 
-            if (this.sound != null)
-                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
+            // Check for a onClick method usage
+            // We want to prioritize other more specific method used
+            // So we wait for another one to maybe overwrite the onClick
+            if (clickTypes.size() != ClickType.values().length)
+                break;
+        }
+
+        if (handler == null)
             return;
-        }
 
-        if (this.onClick != null && event.getClick().isMouseClick()) {
-            this.onClick.accept(event);
+        handler.accept(event);
 
-            if (this.sound != null)
-                context.getPlayer().playSound(this.sound, Sound.Emitter.self());
-        }
+        if (this.sound != null)
+            context.getPlayer().playSound(this.sound, Sound.Emitter.self());
     }
 
     /**
@@ -291,7 +289,7 @@ public class Button extends MenuComponent {
     public Button onClick(Consumer<KikoInventoryClickEvent> onClick) {
         Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-        this.onClick = onClick;
+        this.onClickMap.put(EnumSet.allOf(ClickType.class), onClick);
         return this;
     }
 
@@ -306,7 +304,7 @@ public class Button extends MenuComponent {
     public Button onLeftClick(Consumer<KikoInventoryClickEvent> onLeftClick) {
         Preconditions.checkNotNull(onLeftClick, "onLeftClick cannot be null");
 
-        this.onLeftClick = onLeftClick;
+        this.onClickMap.put(EnumSet.of(ClickType.LEFT), onLeftClick);
         return this;
     }
 
@@ -321,37 +319,7 @@ public class Button extends MenuComponent {
     public Button onRightClick(Consumer<KikoInventoryClickEvent> onRightClick) {
         Preconditions.checkNotNull(onRightClick, "onRightClick cannot be null");
 
-        this.onRightClick = onRightClick;
-        return this;
-    }
-
-    /**
-     * Sets the shift+left click handler.
-     *
-     * @param onShiftLeftClick the shift+left click handler
-     * @return this button for method chaining
-     * @throws NullPointerException if onShiftLeftClick is null
-     */
-    @Contract(value = "_ -> this", mutates = "this")
-    public Button onShiftLeftClick(Consumer<KikoInventoryClickEvent> onShiftLeftClick) {
-        Preconditions.checkNotNull(onShiftLeftClick, "onShiftLeftClick cannot be null");
-
-        this.onShiftLeftClick = onShiftLeftClick;
-        return this;
-    }
-
-    /**
-     * Sets the shift+right click handler.
-     *
-     * @param onShiftRightClick the shift+right click handler
-     * @return this button for method chaining
-     * @throws NullPointerException if onShiftRightClick is null
-     */
-    @Contract(value = "_ -> this", mutates = "this")
-    public Button onShiftRightClick(Consumer<KikoInventoryClickEvent> onShiftRightClick) {
-        Preconditions.checkNotNull(onShiftRightClick, "onShiftRightClick cannot be null");
-
-        this.onShiftRightClick = onShiftRightClick;
+        this.onClickMap.put(EnumSet.of(ClickType.RIGHT), onRightClick);
         return this;
     }
 
@@ -366,7 +334,7 @@ public class Button extends MenuComponent {
     public Button onDrop(Consumer<KikoInventoryClickEvent> onDrop) {
         Preconditions.checkNotNull(onDrop, "onDrop cannot be null");
 
-        this.onDrop = onDrop;
+        this.onClickMap.put(EnumSet.of(ClickType.DROP, ClickType.CONTROL_DROP), onDrop);
         return this;
     }
 
@@ -457,8 +425,7 @@ public class Button extends MenuComponent {
     public static class Builder extends MenuComponent.Builder<Builder> {
         private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
 
-        @Nullable
-        private Consumer<KikoInventoryClickEvent> onClick, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onDrop;
+        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectOpenHashMap<>();
 
         @Nullable
         private Sound sound = Sound.sound(
@@ -468,8 +435,7 @@ public class Button extends MenuComponent {
                 1F
         );
 
-        @Nullable
-        private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
+        @Nullable private Function<MenuContext, ObjectList<ItemStack>> animationFrames;
         private int animationInterval = -1;
         private boolean stopAnimationOnHide = true;
 
@@ -517,7 +483,7 @@ public class Button extends MenuComponent {
         public Builder onClick(Consumer<KikoInventoryClickEvent> onClick) {
             Preconditions.checkNotNull(onClick, "onClick cannot be null");
 
-            this.onClick = onClick;
+            this.onClickMap.put(EnumSet.allOf(ClickType.class), onClick);
             return this;
         }
 
@@ -532,7 +498,7 @@ public class Button extends MenuComponent {
         public Builder onLeftClick(Consumer<KikoInventoryClickEvent> onLeftClick) {
             Preconditions.checkNotNull(onLeftClick, "onLeftClick cannot be null");
 
-            this.onLeftClick = onLeftClick;
+            this.onClickMap.put(EnumSet.of(ClickType.LEFT), onLeftClick);
             return this;
         }
 
@@ -547,37 +513,7 @@ public class Button extends MenuComponent {
         public Builder onRightClick(Consumer<KikoInventoryClickEvent> onRightClick) {
             Preconditions.checkNotNull(onRightClick, "onRightClick cannot be null");
 
-            this.onRightClick = onRightClick;
-            return this;
-        }
-
-        /**
-         * Sets the shift+left click handler.
-         *
-         * @param onShiftLeftClick the shift+left click handler
-         * @return this builder for method chaining
-         * @throws NullPointerException if onShiftLeftClick is null
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder onShiftLeftClick(Consumer<KikoInventoryClickEvent> onShiftLeftClick) {
-            Preconditions.checkNotNull(onShiftLeftClick, "onShiftLeftClick cannot be null");
-
-            this.onShiftLeftClick = onShiftLeftClick;
-            return this;
-        }
-
-        /**
-         * Sets the shift+right click handler.
-         *
-         * @param onShiftRightClick the shift+right click handler
-         * @return this builder for method chaining
-         * @throws NullPointerException if onShiftRightClick is null
-         */
-        @Contract(value = "_ -> this", mutates = "this")
-        public Builder onShiftRightClick(Consumer<KikoInventoryClickEvent> onShiftRightClick) {
-            Preconditions.checkNotNull(onShiftRightClick, "onShiftRightClick cannot be null");
-
-            this.onShiftRightClick = onShiftRightClick;
+            this.onClickMap.put(EnumSet.of(ClickType.RIGHT), onRightClick);
             return this;
         }
 
@@ -592,7 +528,41 @@ public class Button extends MenuComponent {
         public Builder onDrop(Consumer<KikoInventoryClickEvent> onDrop) {
             Preconditions.checkNotNull(onDrop, "onDrop cannot be null");
 
-            this.onDrop = onDrop;
+            this.onClickMap.put(EnumSet.of(ClickType.DROP, ClickType.CONTROL_DROP), onDrop);
+            return this;
+        }
+
+        /**
+         * Sets a click handler for specific click types.
+         *
+         * @param clickType the click type to handle
+         * @param onClick   the click handler
+         * @return this builder for method chaining
+         * @throws NullPointerException if clickType or onClick is null
+         */
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public Builder onClick(ClickType clickType, Consumer<KikoInventoryClickEvent> onClick) {
+            Preconditions.checkNotNull(clickType, "clickType cannot be null");
+            Preconditions.checkNotNull(onClick, "onClick cannot be null");
+
+            this.onClickMap.put(EnumSet.of(clickType), onClick);
+            return this;
+        }
+
+        /**
+         * Sets a click handler for multiple click types.
+         *
+         * @param clickTypes the click types to handle
+         * @param onClick    the click handler
+         * @return this builder for method chaining
+         * @throws NullPointerException if clickTypes or onClick is null
+         */
+        @Contract(value = "_, _ -> this", mutates = "this")
+        public Builder onClick(EnumSet<ClickType> clickTypes, Consumer<KikoInventoryClickEvent> onClick) {
+            Preconditions.checkNotNull(clickTypes, "clickTypes cannot be null");
+            Preconditions.checkNotNull(onClick, "onClick cannot be null");
+
+            this.onClickMap.put(clickTypes, onClick);
             return this;
         }
 

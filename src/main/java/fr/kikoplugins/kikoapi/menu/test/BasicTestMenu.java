@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
@@ -54,6 +55,9 @@ public class BasicTestMenu extends Menu {
                 .onDrop(click -> {
                     click.getPlayer().sendRichMessage("<red>Newton");
                     click.getPlayer().closeInventory();
+                })
+                .onClick(ClickType.SWAP_OFFHAND, click -> {
+                    click.getPlayer().sendRichMessage("<pride:trans>Secret Hehe :3");
                 })
                 .build();
     }
