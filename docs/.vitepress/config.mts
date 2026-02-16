@@ -36,7 +36,7 @@ export default defineConfig({
         ],
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/kikoplugin/KikoAPI'}
+            {icon: 'github', link: 'https://github.com/KikoPlugins/KikoAPI'}
         ]
     }
 })
