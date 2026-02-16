@@ -26,7 +26,7 @@ defineProps<{
                         <h2 class="title" v-html="feature.title"></h2>
                         <p class="details" v-html="feature.details"></p>
                         <a v-if="feature.link" :href="feature.link" class="link">
-                            En savoir plus ->
+                            Learn More &gt;
                         </a>
                     </article>
                 </div>
@@ -145,7 +145,7 @@ defineProps<{
 .details {
     margin: 0;
     font-size: 15px;
-    line-height: 18px;
+    line-height: 1.2;
     color: var(--vp-c-text-2);
 }
 

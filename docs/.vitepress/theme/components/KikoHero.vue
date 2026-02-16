@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {DefaultTheme} from 'vitepress/theme'
 import {VPButton} from "vitepress/theme";
-import {computed, inject} from 'vue'
-import {layoutInfoInjectionKey} from 'vitepress/dist/client/theme-default/composables/layout'
 import CachedImage from "./CachedImage.vue";
 
 export interface HeroAction {
@@ -21,14 +19,10 @@ defineProps<{
     actions?: HeroAction[]
 }>()
 
-const {heroImageSlotExists} = inject(
-        layoutInfoInjectionKey,
-        {heroImageSlotExists: computed(() => false)}
-)
 </script>
 
 <template>
-    <div class="KikoHero" :class="{ 'has-image': image || heroImageSlotExists }">
+    <div class="KikoHero" :class="{ 'has-image': image }">
         <div class="container">
             <div class="main">
                 <slot name="home-hero-info-before"/>
@@ -58,7 +52,7 @@ const {heroImageSlotExists} = inject(
                 <slot name="home-hero-actions-after"/>
             </div>
 
-            <div v-if="image || heroImageSlotExists" class="image">
+            <div v-if="image" class="image">
                 <div class="image-container">
                     <div class="image-bg animate-image-bg"/>
                     <slot name="home-hero-image">
@@ -138,6 +132,8 @@ const {heroImageSlotExists} = inject(
 }
 
 .action {
+    flex-shrink: 0;
+    padding: 6px;
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
@@ -435,6 +431,8 @@ const {heroImageSlotExists} = inject(
     object-fit: contain;
     /*rtl:ignore*/
     transform: translate(-50%, -50%);
+    animation: slideIn 0.8s ease-out forwards;
+    animation-delay: 0.3s;
 }
 
 @media (min-width: 640px) {

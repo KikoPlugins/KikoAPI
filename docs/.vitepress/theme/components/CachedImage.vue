@@ -39,6 +39,10 @@ const getCachedImage = (url: string): string | null => {
 
 const setCachedImage = (url: string, dataUrl: string): void => {
     try {
+        if (dataUrl.length > 5 * 1024 * 1024) { // 5MB limit
+            console.warn('Image is too large to cache:', url);
+            return;
+        }
         const key = CACHE_PREFIX + btoa(url);
         const data: CachedImageData = {
             data: dataUrl,
@@ -46,7 +50,11 @@ const setCachedImage = (url: string, dataUrl: string): void => {
         };
         localStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
-        console.warn('Failed to cache image:', e);
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+            console.warn('LocalStorage quota exceeded, cannot cache image:', e);
+        } else {
+            console.warn('Failed to retrieve cached image:', e);
+        }
     }
 };
 
