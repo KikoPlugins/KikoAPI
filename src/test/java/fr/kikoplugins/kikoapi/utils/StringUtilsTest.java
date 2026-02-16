@@ -1,11 +1,12 @@
 package fr.kikoplugins.kikoapi.utils;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class StringUtilsTest {
-
     @Test
+    @DisplayName("Test compareSemVer method")
     void testCompareSemVer() {
         // Equal versions
         Assertions.assertEquals(0, StringUtils.compareSemVer("1.2.3", "1.2.3"));
@@ -22,14 +23,15 @@ class StringUtilsTest {
     }
 
     @Test
+    @DisplayName("Test compareSemVer with null inputs")
     void testCompareSemVerNullThrows() {
         Assertions.assertThrows(NullPointerException.class, () -> StringUtils.compareSemVer(null, "1.0.0"));
         Assertions.assertThrows(NullPointerException.class, () -> StringUtils.compareSemVer("1.0.0", null));
     }
 
     @Test
+    @DisplayName("Test compareSemVer with invalid format")
     void testCompareSemVerInvalidFormatThrows() {
         Assertions.assertThrows(NumberFormatException.class, () -> StringUtils.compareSemVer("1.0.a", "1.0.0"));
     }
-
 }
