@@ -1,10 +1,14 @@
 package fr.kikoplugins.kikoapi;
 
 import fr.kikoplugins.kikoapi.lang.Lang;
+import fr.kikoplugins.kikoapi.menu.listeners.MenuListener;
 import fr.kikoplugins.kikoapi.updatechecker.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Arrays;
 
 public class KikoAPI extends JavaPlugin {
     private static final String MODRINTH_PROJECT_ID = "nwOXHH0K";
@@ -32,8 +36,17 @@ public class KikoAPI extends JavaPlugin {
         if (!isUnitTest())
             this.bStats = new Metrics(this, BSTATS_PLUGIN_ID);
 
+        registerListeners();
+
         if (this.getConfig().getBoolean("update-checker.enabled", true))
             new UpdateChecker(this, MODRINTH_PROJECT_ID);
+    }
+
+    private void registerListeners() {
+        PluginManager pluginManager = getServer().getPluginManager();
+        Arrays.asList(
+                new MenuListener()
+        ).forEach(listener -> pluginManager.registerEvents(listener, this));
     }
 
     @Override

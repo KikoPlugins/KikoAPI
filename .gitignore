@@ -121,6 +121,12 @@ gradle-app.setting
 # run-paper
 run/**
 
+# MockBukkit
+logs/*
+
+
+### WIKI ###
+
 # Bun
 bun.lock
 
@@ -206,3 +212,4 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+
