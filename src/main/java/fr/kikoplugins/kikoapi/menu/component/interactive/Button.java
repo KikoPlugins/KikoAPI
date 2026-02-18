@@ -7,8 +7,8 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
@@ -63,7 +63,7 @@ public class Button extends MenuComponent {
         super(builder);
         this.item = builder.item;
 
-        this.onClickMap = new Object2ObjectOpenHashMap<>(builder.onClickMap);
+        this.onClickMap = new Object2ObjectLinkedOpenHashMap<>(builder.onClickMap);
 
         this.sound = builder.sound;
 
@@ -430,7 +430,7 @@ public class Button extends MenuComponent {
     public static class Builder extends MenuComponent.Builder<Builder> {
         private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
 
-        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectOpenHashMap<>();
+        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectLinkedOpenHashMap<>();
 
         @Nullable
         private Sound sound = Sound.sound(

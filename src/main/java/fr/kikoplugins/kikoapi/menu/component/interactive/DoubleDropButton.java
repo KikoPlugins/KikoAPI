@@ -7,8 +7,8 @@ import fr.kikoplugins.kikoapi.menu.component.MenuComponent;
 import fr.kikoplugins.kikoapi.menu.event.KikoInventoryClickEvent;
 import fr.kikoplugins.kikoapi.utils.Task;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
@@ -55,7 +55,7 @@ public class DoubleDropButton extends MenuComponent {
         this.item = builder.item;
         this.dropItem = builder.dropItem;
 
-        this.onClickMap = new Object2ObjectOpenHashMap<>(builder.onClickMap);
+        this.onClickMap = new Object2ObjectLinkedOpenHashMap<>(builder.onClickMap);
         this.onDoubleDrop = builder.onDoubleDrop;
 
         this.sound = builder.sound;
@@ -321,7 +321,7 @@ public class DoubleDropButton extends MenuComponent {
         private Function<MenuContext, ItemStack> item = context -> ItemStack.of(Material.STONE);
         private Function<MenuContext, ItemStack> dropItem = context -> ItemStack.of(Material.DIRT);
 
-        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectOpenHashMap<>();
+        private final Object2ObjectMap<EnumSet<ClickType>, Consumer<KikoInventoryClickEvent>> onClickMap = new Object2ObjectLinkedOpenHashMap<>();
         @Nullable private Consumer<KikoInventoryClickEvent> onDoubleDrop;
 
         @Nullable
