@@ -236,7 +236,7 @@ public class Button extends MenuComponent {
     /**
      * Gets the ItemStack to display based on the current button configuration.
      * <p>
-     * Priority order: dynamic item → animation frame → static item
+     * Priority order: animation frame (if set and non-empty) → item function
      *
      * @param context the menu context
      * @return the appropriate ItemStack for the current state

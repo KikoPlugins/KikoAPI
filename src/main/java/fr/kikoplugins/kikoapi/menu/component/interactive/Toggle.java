@@ -113,7 +113,7 @@ public class Toggle extends MenuComponent {
      * Sets the ItemStack to display when the toggle is in the "on" state.
      *
      * @param onItem the ItemStack for the "on" state
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      * @throws NullPointerException if onItem is null
      */
     @Contract(value = "_ -> this", mutates = "this")
@@ -128,7 +128,7 @@ public class Toggle extends MenuComponent {
      * Sets the ItemStack to display when the toggle is in the "off" state.
      *
      * @param offItem the ItemStack for the "off" state
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      * @throws NullPointerException if offItem is null
      */
     @Contract(value = "_ -> this", mutates = "this")
@@ -143,7 +143,7 @@ public class Toggle extends MenuComponent {
      * Sets a function to provide the ItemStack for the "on" state.
      *
      * @param onItem function that returns the ItemStack for the "on" state
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      * @throws NullPointerException if onItem is null
      */
     @Contract(value = "_ -> this", mutates = "this")
@@ -158,7 +158,7 @@ public class Toggle extends MenuComponent {
      * Sets a function to provide the ItemStack for the "off" state.
      *
      * @param offItem function that returns the ItemStack for the "off" state
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      * @throws NullPointerException if offItem is null
      */
     @Contract(value = "_ -> this", mutates = "this")
@@ -173,7 +173,7 @@ public class Toggle extends MenuComponent {
      * Sets the toggle state change handler.
      *
      * @param onToggle the consumer to handle toggle state changes
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      * @throws NullPointerException if onToggle is null
      */
     @Contract(value = "_ -> this", mutates = "this")
@@ -188,7 +188,7 @@ public class Toggle extends MenuComponent {
      * Sets the sound to play when the toggle is clicked.
      *
      * @param sound the sound to play, or null for no sound
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      */
     @Contract(value = "_ -> this", mutates = "this")
     public Toggle sound(@Nullable Sound sound) {
@@ -200,7 +200,7 @@ public class Toggle extends MenuComponent {
      * Sets the initial state of the toggle.
      *
      * @param state true for "on" state, false for "off" state
-     * @return this selector for method chaining
+     * @return this toggle for method chaining
      */
     @Contract(value = "_ -> this", mutates = "this")
     public Toggle currentState(boolean state) {
