@@ -6,6 +6,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "3.0.2"
     id("com.gradleup.shadow") version "9.3.1"
     id("maven-publish")
+    id("jacoco")
 }
 
 val minecraftVersion: String by project
@@ -82,6 +83,23 @@ tasks {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
         }
+    }
+
+    check {
+        dependsOn(jacocoTestReport)
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+            html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.8.14"
     }
 
     javadoc {
